@@ -1,0 +1,933 @@
+﻿@model BarMateTabletOrdering.Models.CabbashViewModel
+
+@{
+    ViewBag.Title = "IndexNew";
+    Layout = "~/Views/Shared/_LayoutPOS.cshtml";
+}
+
+<link href="~/confirm/css/jquery-confirm.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="https://js.paystack.co/v1/inline.js"></script>
+<script src="~/confirm/js/jquery-confirm.js"></script>
+
+
+
+@Html.Hidden("TableId", Model.TableId)
+@Html.Hidden("TableAlias", Model.TableAlias)
+
+
+
+
+
+<div class="col-md-9 right-side nopadding">
+
+
+
+    <div class="row row-horizon">
+        <div id="CategoryDIV">
+        </div>
+    </div>
+    <div class="col-sm-12" style="display:none;">
+        <div id="searchContaner">
+            <div class="input-group stylish-input-group">
+                <input type="text" id="searchProd" class="form-control" placeholder="Search">
+                <span class="input-group-addon">
+                    <button type="submit">
+                        <span class="glyphicon glyphicon-search"></span>
+                    </button>
+                </span>
+            </div>
+        </div>
+    </div>
+    <!-- product list section -->
+    <div id="CustomerTableDiv">
+    </div>
+
+    <div id="productList2">
+    </div>
+</div>
+
+<button style="display:none;" type="button" id="AddMe" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+    Added
+</button>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <p>Added to Cart <i class="icon_cart"></i></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script type="text/javascript">
+
+
+        $(document).ready(function ()
+        {
+            var tableuName = '@Model.OpenedTableName';
+
+            $("#KitchenNote").val(tableuName);
+
+            $("#DeptProcess").hide();
+
+            $("#HideTop").click(function (e)
+            {
+                $("#HidenSeek").toggle();
+            });
+
+            var tableId = '@Model.TableId';
+
+            if (tableId == "undefined")
+            {
+                tableId = 0;
+                $("#HidenSeek").hide();
+            }
+
+            LoadProducts(0, tableId);
+
+            if (tableId > 0)
+            {
+                $("#HidenSeek").show();
+
+                $.ajax({
+                    url: "@Url.Action("LoadAllBottomPos", "SelfService")",
+                    type: "GET",
+                data: { id : tableId },
+                dataType: "JSON",
+                success: function (data)
+                {
+                    $('#productList').html("");
+                    $('#productList').html(data.LoadPosView);
+
+                    $('#BottomPayment').html("");
+                    $('#BottomPayment').html(data.LoadPosBottom);
+
+                    $("#TableId").val(tableId);
+
+                },
+                error: function (jqXHR, textStatus, errorThrown)
+                {
+
+                }
+            });
+
+                //$('#productList').load("/SelfService/LoadPos/" + tableId);
+
+                //$('#BottomPayment').load("/SelfService/LoadBottomPos/" + tableId);
+            }
+
+            $("#searchProd").keyup(function () {
+                //alert("searchProd");
+                // Retrieve the input field text
+                var filter = $(this).val();
+                // Loop through the list
+                $("#productList2 #proname").each(function () {
+                    // If the list item does not contain the text phrase fade it out
+                    if ($(this).text().search(new RegExp(filter, "i")) < 0) {
+                        $(this).parent().parent().parent().hide();
+                        // Show the list item if the phrase matches
+                    } else {
+                        $(this).parent().parent().parent().show();
+                    }
+                });
+            });
+
+            $("#searchProdTable").keyup(function () {
+                // Retrieve the input field text
+                //alert("searchProdT");
+
+                var filter = $(this).val();
+                // Loop through the list
+                $("#tableList2 #proname").each(function () {
+                    // If the list item does not contain the text phrase fade it out
+                    if ($(this).text().search(new RegExp(filter, "i")) < 0) {
+                        $(this).parent().parent().parent().hide();
+                        // Show the list item if the phrase matches
+                    } else {
+                        $(this).parent().parent().parent().show();
+                    }
+                });
+            });
+
+
+        });
+
+
+
+        $(".categories").unbind("click");
+
+        $(".categories").click(function () {
+
+
+
+            // Retrieve the input field text
+            var filter = $(this).attr('id');
+
+            $(this).parent().children().removeClass('selectedGat');
+
+            $(this).addClass('selectedGat');
+            var fruits = [];
+
+            // Loop through the list
+            $("#productList2 #category").each(function () {
+                // If the list item does not contain the text phrase fade it out
+                if ($(this).val().search(new RegExp(filter, "i")) < 0) {
+                    $(this).parent().parent().parent().hide();
+                    // Show the list item if the phrase matches
+                } else {
+                    $(this).parent().parent().parent().show();
+                    var startName = $(this).parent().parent().parent().text().trim().charAt(0);
+                    fruits.push(startName);
+                }
+            });
+
+
+            //var cleanArray = $.unique(fruits);
+
+            var cleanArray = Array.from(new Set(fruits));
+
+            $("#AlphabetFilter").html("");
+
+            for (var i = 0; i < cleanArray.length ; i++) {
+                var ttt = cleanArray[i];
+                $("#AlphabetFilter").append("<span class='categoriesSearch' id='" + ttt + "'>" + ttt + "</span>");
+            }
+
+            $(".categoriesSearch").unbind("click");
+
+            $(".categoriesSearch").click(function () {
+
+                $("#productList2 #proname").each(function () {
+                    $(this).parent().parent().parent().show();
+                });
+
+                // Retrieve the input field text
+                var filter = $(this).attr("Id");
+                // Loop through the list
+                $("#productList2 #proname").each(function () {
+                    // If the list item does not contain the text phrase fade it out
+                    if ($(this).text().search(new RegExp('^' + filter, "i")) < 0) {
+                        $(this).parent().parent().parent().hide();
+                        // Show the list item if the phrase matches
+                    } else {
+                        //var itemFullName = $(this).parent().parent().parent().val().trim();
+                        var itemFullName = $(this).closest('div').children('h3').attr("class");
+                        //alert(itemFullName);
+                        if (filter == itemFullName) {
+                            $(this).parent().parent().parent().show();
+                        }
+
+                    }
+                });
+            });
+
+
+        });
+
+
+        function closeModal() {
+            $('#myModal').modal('hide');
+        }
+
+
+        function LoadMethods(tableId)
+        {
+            $(".categories").unbind("click");
+
+            $(".categories").click(function () {
+
+                // Retrieve the input field text
+                var filter = $(this).attr('id');
+
+                $(this).parent().children().removeClass('selectedGat');
+
+                $(this).addClass('selectedGat');
+
+                var fruits = [];
+
+                //alert(filter);
+
+                // Loop through the list
+                $("#productList2 #category").each(function () {
+                    // If the list item does not contain the text phrase fade it out
+                    //alert($(this).val());
+                    //alert(filter);
+                    //alert($(this).parent().parent().text().trim().charAt(0));
+
+                    //alert("NEW");
+
+                    if ($(this).val().search(new RegExp(filter, "i")) < 0) {
+                        $(this).parent().parent().hide();
+                        // Show the list item if the phrase matches
+                    } else {
+                        $(this).parent().parent().show();
+                        var startName = $(this).parent().parent().text().trim().charAt(0);
+                        fruits.push(startName);
+                    }
+                });
+
+
+                //var cleanArray = $.unique(fruits);
+
+                var cleanArray = Array.from(new Set(fruits));
+
+                $("#AlphabetFilter").html("");
+
+                for (var i = 0; i < cleanArray.length ; i++) {
+                    var ttt = cleanArray[i];
+                    $("#AlphabetFilter").append("<span class='categoriesSearch' id='" + ttt + "'>" + ttt + "</span>");
+                }
+
+                $(".categoriesSearch").unbind("click");
+
+                $(".categoriesSearch").click(function () {
+                    //alert("cs");
+                    $("#productList2 #proname").each(function () {
+                        $(this).parent().parent().hide();
+                    });
+
+                    // Retrieve the input field text
+                    var filter1 = $(this).attr("Id");
+
+                    // Loop through the list
+                    $("#productList2 #proname").each(function () {
+                        // If the list item does not contain the text phrase fade it out
+                        if ($(this).text().search(new RegExp('^' + filter1, "i")) < 0)
+                        {
+                            $(this).parent().parent().hide();
+                            // Show the list item if the phrase matches
+                        } else
+                        {
+                            //alert("LL5");
+                            //$(this).parent().parent().parent().show();
+                            //var itemFullName = $(this).parent().parent().parent().val().trim();
+                            var itemFullName = $(this).closest('div').children('h3').attr("class");
+
+                            if (filter == itemFullName || filter == "")
+                            {
+                                $(this).parent().parent().show();
+                            }
+
+                        }
+                    });
+                });
+
+            });
+
+
+
+            $(".SingleNote").off("click");
+
+            $(".SingleNote").on("click", function ()
+            {
+                //alert();
+                var id = $(this).attr("Id");
+                //$.alert(id);
+                $.confirm({
+                    title: 'Enter an Item Kitchen Note!',
+                    type : 'green',
+                    content: '' +
+                    '<form action="" class="formName">' +
+                    '<div class="form-group">' +
+                    '<input type="text" placeholder="Kitchen Note" class="name form-control" required />' +
+                    '</div>' +
+                    '</form>',
+                    buttons: {
+                        formSubmit: {
+                            text: 'Submit',
+                            btnClass: 'btn-blue',
+                            action: function ()
+                            {
+                                var name = this.$content.find('.name').val();
+
+                                if (!name)
+                                {
+                                    $.alert('provide a valid note');
+                                    return false;
+                                }
+
+                                $.ajax({
+                                    type: "get",
+                                    async: false,
+                                    url: "@Url.Action("PostIndividualKitchenNote","SelfService")",
+                                    data: {tableId : tableId, tableItemId : id, note : name },
+                                dataType: "json",
+                                success: function (data)
+                                {
+                                    $.alert('Kitchen note succesfully added');
+                                },
+                                error: function ()
+                                {
+                                }
+                            });
+
+
+                    }
+                    },
+                cancel: function ()
+                {
+                    //close
+                },
+                }
+                });
+        });
+
+        //$(".incbutton").off("click");
+
+        //$(".incbutton").on("click", function () {
+        //    var $button = $(this); var oldValue = $button.parent().parent().find("input").val();
+        //    var newVal = parseFloat(oldValue) + 1; $button.parent().parent().find("input").val(newVal);
+        //    edit_posale($button.parent().parent().find("input").attr("id").slice(3),1);
+        //});
+
+        //$(".decbutton").off("click");
+
+        //$(".decbutton").on("click", function () {
+        //    var $button = $(this); var oldValue = $button.parent().parent().find("input").val();
+        //    if (oldValue > 1) { var newVal = parseFloat(oldValue) - 1; } else { newVal = 1; }
+        //    $button.parent().parent().find("input").val(newVal);
+        //    edit_posale($button.parent().parent().find("input").attr("id").slice(3),0);
+        //});
+
+        }
+
+        function LoadProducts(id, tableId)
+        {
+            //alert(tableId);
+
+            if (tableId == 0)
+            {
+
+                var murl =  "@Url.Action("GetProducts", "SelfService")" + "/" + id;
+                var murl1 = "@Url.Action("GetMyTables", "SelfService")" + "/?tableId=" + tableId;
+
+
+                // ajax delete data to database
+                $.ajax({
+                    url: murl,
+                    type: "GET",
+                    dataType: "json",
+                    success: function (data)
+                    {
+                        $("#productList2").html("");
+                        $("#productList2").html(data.PV);
+
+                        $("#CategoryDIV").html("");
+                        $("#CategoryDIV").html(data.CV);
+
+                        LoadMethods(tableId);
+
+                        $.ajax({
+                            url: murl1,
+                            type: "GET",
+                            dataType: "json",
+                            success: function (dataBack)
+                            {
+                                $("#WaiterTableDIV").html("");
+                                $("#WaiterTableDIV").html(dataBack.WT);
+                            },
+                            error: function (jqXHR, textStatus, errorThrown)
+                            {
+
+                            }
+                        });
+
+                    },
+                    error: function (jqXHR, textStatus, errorThrown)
+                    {
+
+                    }
+                });
+            }
+            else
+            {
+                var murl = "@Url.Action("GetProducts", "SelfService")" + "/" + id; // + "?tableId=" + tableId;
+                var murl1 = "@Url.Action("GetMyTables", "SelfService")" + "/?tableId=" + tableId; // + "?tableId=" + tableId;
+
+
+                // ajax delete data to database
+                $.ajax({
+                    url: murl,
+                    type: "GET",
+                    dataType: "json",
+                    success: function (data)
+                    {
+                        $("#productList2").html("");
+                        $("#productList2").html(data.PV);
+
+                        $("#CategoryDIV").html("");
+                        $("#CategoryDIV").html(data.CV);
+
+                        LoadMethods(0);
+
+                        $.ajax({
+                            url: murl1,
+                            type: "GET",
+                            dataType: "json",
+                            success: function (dataBack)
+                            {
+                                $("#WaiterTableDIV").html("");
+                                $("#WaiterTableDIV").html(dataBack.WT);
+                            },
+                            error: function (jqXHR, textStatus, errorThrown) {
+
+                            }
+                        });
+                    },
+                    error: function (jqXHR, textStatus, errorThrown)
+                    {
+
+                    }
+                });
+
+            }
+
+
+        }
+
+    function delete_posaleManager(id)
+    {
+
+
+        var tableId = $("#TableId").val();
+
+            $.confirm({
+                title: 'Confirm!',
+                type : 'red',
+                buttons: {
+                    somethingElse: {
+                        text: 'Delete',
+                        btnClass: 'btn-blue',
+                        action: function ()
+                        {
+                            var numQty = 1;
+
+                            $.ajax({
+                                url: "@Url.Action("ReduceOrDeleteQuatityManager", "SelfService")",
+                                type: "POST",
+                                data: { tableId: tableId, id: id, password: "280701", qty : numQty },
+                            dataType: "JSON",
+                            success: function (data)
+                            {
+                                $("#DeptProcess").hide();
+
+                                $('#productList').html("");
+                                $('#productList').html(data.LoadPosView);
+
+                                $('#BottomPayment').html("");
+                                $('#BottomPayment').html(data.LoadPosBottom);
+
+                                $("#TableId").val(tableId);
+
+
+                                LoadMethods(tableId);
+
+                            },
+                            error: function (jqXHR, textStatus, errorThrown)
+                            {
+                                alert("error");
+                            }
+                           });
+                        }
+                    },
+                    cancel: function ()
+                    {
+
+                    }
+                }
+            });
+
+            // ajax delete data to database
+
+
+        }
+
+
+        function delete_posale(id) {
+
+
+
+            var tableId = $("#TableId").val();
+            // ajax delete data to database
+            $.ajax({
+                url: "@Url.Action("ReduceOrDeleteQuatity", "SelfService")",
+                type: "POST",
+                data: { tableId: tableId, id: id},
+                dataType: "JSON",
+                success: function (data)
+                {
+                    $("#DeptProcess").hide();
+                    $('#productList').html("");
+                    $('#productList').html(data.LoadPosView);
+
+                    $('#BottomPayment').html("");
+                    $('#BottomPayment').html(data.LoadPosBottom);
+
+                    $("#TableId").val(tableId);
+
+                    LoadMethods(tableId);
+                },
+                error: function (jqXHR, textStatus, errorThrown)
+                {
+                    alert("error");
+                }
+            });
+
+        }
+
+
+    function add_picture(picturePath, name)
+    {
+        var url = "/SelfService/GetProductPic/?pictureId=" + picturePath;
+
+        $.confirm({
+            title: name,
+            content: 'url:' + url,
+            titleClass: 'BigTittle',
+            boxWidth: '50%'
+            // location of your hugedata.html.
+            //content: 'url:hugedata.html' // location of your hugedata.html.
+        });
+    }
+
+    function add_posaleBlank(id)
+    {
+        $.alert({
+            title: 'Please select a table!',
+            content: '<br><centre><img style="padding-left:0%;" src="../../images/SelectATable.png"></centre>',
+            titleClass: 'BigTittle',
+            boxWidth: '50%'
+        });
+
+        return false;
+    }
+
+
+
+        function add_posale(id)
+        {
+            var name1 = $('#idname-' + id).val();
+
+            var tableId = $("#TableId").val();
+
+            if (tableId == 0)
+            {
+                $.alert({
+                    title: 'Please select a table!',
+                    type: 'red',
+                    content: '<br><centre><img style="padding-left:0%;" src="../../images/SelectATable.png"></centre>',
+                    titleClass: 'BigTittle',
+                    boxWidth: '50%'
+                });
+                return false;
+            }
+
+            var price1 = $('#idprice-' + id).val();
+
+            var globalCount = $("#ItemCount").text();
+
+            $.ajax({
+                url: "/SelfService/AddProduct/",
+                type: "POST",
+                start_time: new Date().getTime(),
+                dataType: "JSON",
+                data: { ignore: false, tableId: tableId, name: name1, price: price1, product_id: id, number: 0, registerid: 33 },
+                success: function (data)
+                {
+                    globalCount++;
+                    $("#DeptProcess").hide();
+                    $("#ThisIsNonActive").append(data.LoadSingleItem);
+                    $("#ItemCount").html(globalCount);
+                    $("#TableId").val(tableId);
+
+                    LoadMethods(tableId);
+                    //alert('This request took ' + (new Date().getTime() - this.start_time) + ' ms');
+                },
+                error: function (jqXHR, textStatus, errorThrown)
+                {
+                    $.alert("This table has been closed by the Cashier");
+                    window.location.href = "/SelfService/index/";
+                }
+            });
+
+        }
+
+
+
+    function edit_posale(id, type)
+    {
+
+
+            var qt1 = $('#qt-' + id).val();
+            var tableId = $('#TableId').val();
+
+            $.ajax({
+                url: "@Url.Action("ReduceOrDeleteQuatity", "SelfService")",
+                type: "POST",
+                dataType: "JSON",
+                data: { tableId: tableId, id: id, qty: qt1, type: type },
+                success: function (data)
+                {
+                    $("#DeptProcess").hide();
+
+                    $('#productList').html("");
+                    $('#productList').html(data.LoadPosView);
+
+                    $('#BottomPayment').html("");
+                    $('#BottomPayment').html(data.LoadPosBottom);
+
+                    $("#TableId").val(tableId);
+                    LoadMethods(tableId);
+
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert("error");
+                }
+            });
+
+    }
+
+    function payWithPaystack(amount, transId, telephone) {
+        var handler = PaystackPop.setup({
+            //key: 'pk_test_8dd5cd81548ad6833fb63e9d60f9b17dec7acfa9',//pk_live_2e9989d6cdc7f0c48f81ca15fa2742367f8bd3e0
+            key: 'pk_test_8dd5cd81548ad6833fb63e9d60f9b17dec7acfa9',
+            email: 'leboston@yahoo.com',
+            amount: amount * 100,
+            ref: transId, // generates a pseudo-unique reference. Please replace with a reference you generated. Or remove the line entirely so our API will generate one for you
+            metadata: {
+                custom_fields: [
+                    {
+                        display_name: "Mobile Number",
+                        variable_name: "mobile_number",
+                        value: "leboston@yahoo.com"
+                    }
+                ]
+            },
+            callback: function (response) {
+                // alert('success. transaction ref is ' + response.reference);
+                window.location.href = "/SelfService/ReturnChargePaystack/?id=0&txnref=" + response.reference + "&Telephone=" + telephone;
+            },
+            onClose: function () {
+                alert('window closed');
+            }
+        });
+        handler.openIframe();
+    }
+
+
+    function ProcesOrderDept(id,total) {
+
+        var tableId = id;
+
+        total = 0;
+
+        var kitchenNote = $('#KitchenNote').val();
+
+        $.ajax({
+            type: "get",
+            async: false,
+            url: "@Url.Action("GetTransactionId", "SelfService")",
+            data: { amount: total, tableId: tableId, kitchenNote : kitchenNote },
+        dataType: "json",
+        success: function (data)
+        {
+
+
+            if (data.transId != "")
+            {
+
+                $.confirm({
+                    title: 'Pay with Paystack!',
+                    content: 'Please confirm!' +
+                        '<form action="" class="formName">' +
+                        '<div class="form-group">' +
+                        '<input type="text" placeholder="Telephone Number Please" class="name form-control" required />' +
+                        '</div>' +
+                        '</form>',
+                    buttons: {
+
+                        somethingElse1:
+                           {
+                               text: 'Paystack',
+                               btnClass: 'btn-blue',
+                               action: function ()
+                               {
+                                   var telephone = this.$content.find('.name').val();
+
+                                   if (!telephone)
+                                   {
+                                       $.alert('provide a telephone number');
+                                       return false;
+                                   }
+                                   
+
+                                   total = data.Total;
+                                   payWithPaystack(total, data.transId, telephone);
+                                   //payWithPaystack(total, data.transId);
+                               }
+                           },
+                        cancel: function ()
+                        {
+
+                        }
+                    }
+                });
+
+            }
+        },
+        error: function ()
+        {
+        }
+
+        });
+
+    }
+
+    function ProcesOrder(id)
+    {
+        //alert();
+
+        $.confirm({
+            title: 'Please Confirm!',
+            content: 'Are you sure you want to review your order?',
+            titleClass: 'BigTittle',
+            boxWidth: '50%',
+            buttons: {
+                confirm: {
+                    text: 'Review',
+                    btnClass: 'btn-green',
+                    keys: ['enter', 'shift'],
+                    action: function ()
+                    {
+                        var kitchenNote = $('#KitchenNote').val();
+
+                        var url = "/SelfService/ProcessTheOrderByTableNumberOne/";
+
+                        $("#ULDIVTOHIDE").hide();
+
+                        $.ajax({
+                            url: url,
+                            data: { tableId: id, kitchenNote: kitchenNote },
+                            dataType: "JSON",
+                            type: "POST",
+                            success: function (data)
+                            {
+                                if (data.Success == 1)
+                                {
+                                    $('#KitchenNote').val("");
+                                    $('#productList').html("");
+                                    $('#productList').html(data.LoadPosView);
+
+                                    $('#BottomPayment').html("");
+                                    $('#BottomPayment').html(data.LoadPosBottom);
+
+                                    $("#TableId").val(id);
+
+                                    $("#KitchenNote").val(data.OpenedTableName);
+                                }
+                                else
+                                {
+                                    $.alert(data.ErrorMessage);
+                                }
+                                $("#ULDIVTOHIDE").show();
+                            },
+                            error: function (jqXHR, textStatus, errorThrown)
+                            {
+                                alert(jqXHR);
+                                $("#ULDIVTOHIDE").show();
+                            }
+                        });
+                    }
+                },
+                cancel: {
+                    text: 'Cancel',
+                    btnClass: 'btn-red',
+                    action: function ()
+                    {
+                        return true;
+                    }
+                }
+            }
+        });
+
+    }
+
+    function ReProcesOrder(id) {
+
+        $.confirm({
+            title: 'Please Confirm!',
+            content: 'Are you sure you want to Reprocess your order?',
+            titleClass: 'BigTittle',
+            boxWidth: '50%',
+            buttons: {
+                confirm: {
+                    text: 'ReProcess',
+                    btnClass: 'btn-green',
+                    keys: ['enter', 'shift'],
+                    action: function ()
+                    {
+                        var kitchenNote = $('#KitchenNote').val();
+
+                        var url = "/SelfService/ReProcessTheOrderByTableNumberOne/";
+
+                        $("#DeptReProcess").hide();
+
+                        $.ajax({
+                            url: url,
+                            data: { tableId: id, kitchenNote: kitchenNote },
+                            dataType: "JSON",
+                            type: "POST",
+                            success: function (data) {
+                                if (data.Success == 1) {
+                                    $('#KitchenNote').val("");
+                                    $('#productList').html("");
+                                    $('#productList').html(data.LoadPosView);
+
+                                    $('#BottomPayment').html("");
+                                    $('#BottomPayment').html(data.LoadPosBottom);
+
+                                    $("#TableId").val(id);
+
+                                    $("#KitchenNote").val(data.OpenedTableName);
+                                }
+                                else
+                                {
+                                    $.alert(data.ErrorMessage);
+                                }
+                                $("#ULDIVTOHIDE").show();
+                            },
+                            error: function (jqXHR, textStatus, errorThrown) {
+                                alert(jqXHR);
+                                $("#ULDIVTOHIDE").show();
+                            }
+                        });
+                    }
+                },
+                cancel: {
+                    text: 'Cancel',
+                    btnClass: 'btn-red',
+                    action: function () {
+                        return true;
+                    }
+                }
+            }
+        });
+
+    }
+
+
+
+
+</script>
+
+
+
+
+
+
+

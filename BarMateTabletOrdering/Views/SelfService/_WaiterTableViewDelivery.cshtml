@@ -1,0 +1,262 @@
+﻿@model BarMateTabletOrdering.Models.CabbashViewModel
+
+<link href="~/confirm/css/jquery-confirm.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+<script src="~/confirm/js/jquery-confirm.js"></script>
+
+<script>
+    $(function()
+    {
+        $('.addPct').on('click', function (e) {
+            var $link = $(e.target);
+            if (!$link.data('lockedAt')) {
+                $link.data('lockedAt', +new Date());
+            } else if (+new Date() - $link.data('lockedAt') > 500) {
+                $link.data('lockedAt', +new Date());
+            } else {
+                e.preventDefault();
+                e.stopPropagation();
+                e.stopImmediatePropagation();
+            }
+        });
+
+        $('.addPct').dblclick(false);
+
+        $(".addPct").dblclick(function (e)
+        {
+            return false;
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+
+            $.alert("Only single clicks allowed!");
+        });
+
+        //$(".ViewWaitressTable").unbind("click");
+        $(".ViewWaitressTable").click(function (e)
+        {
+            var url = $(this).attr("href");
+
+            //e.stopPropagation();
+            e.preventDefault();
+
+            $.confirm({
+                title: "My Open Tables",
+                content: 'url:' + url,
+                useBootstrap: false,
+                columnClass: 'col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3 col-xs-10 col-xs-offset-1',
+                titleClass: 'BigTittle',
+                boxWidth: '80%',
+                onClose : function ()
+                {
+                    //Rebind();
+                },
+                onContentReady: function () {
+                    // bind to events
+                    var jc = this;
+                    this.$content.find('a').on('click', function (e) {
+                        //alert("a clicker");
+                        jc.close();
+                        // if the user submits the form by pressing enter in the field.
+                        //e.preventDefault();
+                        //jc.$$formSubmit.trigger('click'); // reference the button and click it
+                    });
+                }
+            });
+        });
+
+
+        $(".grabUrl").click(function (e)
+        {
+
+            var url = $(this).attr("href");
+
+            e.stopPropagation();
+            e.preventDefault();
+
+            $.confirm({
+                title: 'Customer Telephone required!',
+                content: '' +
+                '<form action="" class="formName">' +
+                '<div class="form-group">' +
+                '<input type="text" placeholder="Customer Telephone Or Name" class="name form-control" required />' +
+                '</div>' +
+                '</form>',
+                buttons: {
+                    confirm: {
+                        text: 'Proceed',
+                        btnClass: 'btn-green',
+                        keys: ['enter', 'shift'],
+                        action: function ()
+                        {
+                            $("#HidenSeek").show();
+
+                            var name = this.$content.find('.name').val();
+
+                            if (!name) {
+                                $.alert('Please provide a valid telephone number or name');
+                                return false;
+                            }
+
+                            $.ajax({
+                                url: url + "&telephoneName=" + name,
+                                type: "GET",
+                                //data: { id : tableId },
+                                dataType: "JSON",
+                                success: function (data) {
+
+                                    $('#productList').html("");
+                                    $('#productList').html(data.LoadPosView);
+
+                                    $('#BottomPayment').html("");
+                                    $('#BottomPayment').html(data.LoadPosBottom);
+
+                                    $("#TableId").val(data.OpenedTableId);
+
+                                    $("#KitchenNote").val(data.OpenedTableName);
+                                },
+                                error: function (jqXHR, textStatus, errorThrown) {
+
+                                }
+                            });
+
+                            return true;
+                        }
+                    },
+                    cancel: {
+                        text: 'Cancel',
+                        btnClass: 'btn-red',
+                        action: function () {
+                            return true;
+                        }
+                    }
+                }
+            });
+
+        });
+
+        $(".QuestionWaiter").click(function (e)
+        {
+            var url = $(this).attr("href");
+
+                e.stopPropagation();
+                e.preventDefault();
+
+                $.confirm({
+                    title: 'Customer Telephone required!',
+                    content: '' +
+                    '<form action="" class="formName">' +
+                    '<div class="form-group">' +
+                    '<input type="text" placeholder="Customer Telephone Or Name" class="name form-control" required />' +
+                    '</div>' +
+                    '</form>',
+                    boxWidth: '50%',
+                    buttons: {
+                        confirm: {
+                            text: 'Proceed',
+                            btnClass: 'btn-green',
+                            keys: ['enter', 'shift'],
+                            action: function ()
+                            {
+                                $("#HidenSeek").show();
+
+                                var name = this.$content.find('.name').val();
+
+                                if (!name) {
+                                    $.alert('Please provide a valid telephone number or name');
+                                    return false;
+                                }
+
+                                
+
+                                $.ajax({
+                                    url: url + "&telephoneName=" + name,
+                                    type: "GET",
+                                    //data: { id : tableId },
+                                    dataType: "JSON",
+                                    success: function (data) {
+
+                                        $('#productList').html("");
+                                        $('#productList').html(data.LoadPosView);
+
+                                        $('#BottomPayment').html("");
+                                        $('#BottomPayment').html(data.LoadPosBottom);
+
+                                        $("#TableId").val(data.OpenedTableId);
+
+                                        $("#KitchenNote").val(data.OpenedTableName);
+                                    },
+                                    error: function (jqXHR, textStatus, errorThrown) {
+
+                                    }
+                                });
+
+                                return true;
+                            }
+                        },
+                        cancel: {
+                            text: 'Cancel',
+                            btnClass: 'btn-red',
+                            action: function ()
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                });
+        });
+
+
+    });
+
+
+        function isDoubleClicked(element)
+        {
+        //if already clicked return TRUE to indicate this click is not allowed
+        if (element.data("isclicked")) return true;
+
+        //mark as clicked for 1 second
+        element.data("isclicked", true);
+        setTimeout(function () {
+            element.removeData("isclicked");
+        }, 1000);
+
+        //return FALSE to indicate this click was allowed
+        return false;
+       }
+</script>
+
+
+
+<a href="@Url.Action("ViewTables", "Pos")" class="ViewWaitressTable">
+    <span class="categoriesTable selectedWat" id=""><i class="fa fa-table"></i></span>
+</a>
+
+
+
+
+@foreach (var p0 in Model.TableNumbers.GroupBy(x => x.IsActive))
+{
+
+
+    foreach (var p in p0.ToList())
+    {
+        if (p0.Key == true)
+        {
+            <a href="@Url.Action("OpenTableByCashier", "Pos", new { id = p.TableId, isActive = p0.Key })" class="QuestionWaiter">
+                <span style="background-color:red;color:white;" class="categoriesTable" id="@p.TableId">@p.TableId.ToString()</span>
+            </a>
+        }
+        else
+        {
+            <a href="@Url.Action("OpenTableByCashier", "Pos", new { id = p.TableId, isActive = p0.Key })" class="addPct grabUrl">
+                <span class="categoriesTable" id="@p.TableId">@p.TableId.ToString()</span>
+            </a>
+        }
+
+    }
+}
+
+
+
+

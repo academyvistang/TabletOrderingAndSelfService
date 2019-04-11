@@ -1,0 +1,148 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
+    <link href="images/apple-touch-startup-image-320x460.png" media="(device-width: 320px)" rel="apple-touch-startup-image">
+    <link href="images/apple-touch-startup-image-640x920.png" media="(device-width: 320px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image">
+    <title>Cabbash - Tablet</title>
+    <link href="~/css/framework7.css" rel="stylesheet" />
+    <link href="~/css/style.css" rel="stylesheet" />
+    <link type="text/css" rel="stylesheet"  href="~/css/swipebox.css" />
+    <link type="text/css" rel="stylesheet"  href="~/css/animations.css" />
+    <link href="~/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/css/easy-numpad.css" rel="stylesheet" />
+    <link href="~/confirm/css/jquery-confirm.css" rel="stylesheet" />
+
+    <style>
+        #over img {
+	margin-left: auto;
+	margin-right: auto;
+	display: block;
+    }
+      .nice-textbox{
+  position: relative;
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  border: none;
+  border-radius: 5px;
+  font-size: 36px;
+  color: #a0a0a0;
+  outline: none;
+  height:45px;
+  text-align: center;
+}
+    </style>
+</head>
+<body id="mobile_wrap">
+
+    <div class="statusbar-overlay"></div>
+
+    <div class="panel-overlay"></div>
+
+    <div class="panel panel-left panel-reveal">
+        <div class="view view-subnav">
+            <div class="pages">
+                <div data-page="panel-leftmenu" class="page pagepanel">
+                    <div class="page-content">
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="views">
+        <div class="view view-main">
+            @RenderBody()
+        </div>
+    </div>
+
+
+    <div class="popup popup-login" style="background-color:azure;">
+        <div class="content-block">
+            <div class="loginform">
+                <form id="LoginForm" method="post" action="@Url.Action("LoginStaff","Account")">
+                    <div>
+                        @Html.Partial("_NumberPad")
+                    </div>
+                </form>
+            </div>
+           
+        </div>
+    </div>
+   
+
+    
+    <script type="text/javascript" src="~/js/jquery-1.10.1.min.js"></script>
+    <script type="text/javascript" src="~/js/jquery.validate.min.js"></script>
+    <script type="text/javascript" src="~/js/framework7.js"></script>
+    <script type="text/javascript" src="~/js/my-app.js"></script>
+    <script src="~/confirm/js/jquery-confirm.js"></script>
+    
+
+    <script>
+        $(function ()
+        {
+            $('.noajax').unbind('click');
+
+            $('.noajax').click(function (e) {
+                var href = $(this).attr("href");
+                e.preventDefault();
+                e.stopPropagation();
+                window.location.href = href;
+            });
+
+        });
+
+        function easy_numpad_done()
+        {
+            var code = $("#easy-numpad-output").text();
+
+            if (code == "")
+            {
+                $.alert({
+                    title: 'INVALID CODE!',
+                    content: 'Please enter your Pin Code!',
+                });
+            }
+            else
+            {
+                var input = $("<input>")
+                              .attr("type", "hidden")
+                              .attr("name", "code").val(code);
+
+                $('#LoginForm').append($(input));
+
+                $("#LoginForm").submit();
+            }
+        }
+
+        function easynum(id)
+        {
+            navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
+            if (navigator.vibrate)
+            {
+                navigator.vibrate(60);
+            }
+
+            if (id >= 0)
+            {
+                $('#easy-numpad-output').append(id);
+            }
+            else
+            {
+                $('#easy-numpad-output').text("");
+            }
+            
+        }
+    </script>
+
+    
+
+</body>
+</html>

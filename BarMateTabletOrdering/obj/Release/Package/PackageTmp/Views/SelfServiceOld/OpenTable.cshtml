@@ -1,0 +1,103 @@
+﻿@model BarMateTabletOrdering.Models.CabbashViewModel
+
+@{
+    ViewBag.Title = "OpenTable";
+    Layout = "~/Views/Shared/_LayoutPOSFull.cshtml";
+}
+
+@*<link href="~/css/TilesSmall.css" rel="stylesheet" />*@
+<link href="~/confirm/css/jquery-confirm.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+<script src="~/confirm/js/jquery-confirm.js"></script>
+
+<script>
+    $(function()
+    {
+        $(".QuestionWaiter").click(function (e)
+        {
+            var url = $(this).attr("href");
+
+            e.stopPropagation();
+            e.preventDefault();
+
+            $.confirm({
+                title: 'Please Confirm!',
+                content: 'Do you want to add to an existing table?',
+                 titleClass: 'BigTittle',
+                boxWidth: '50%',
+                buttons: {
+                    confirm: {
+                        text: 'Proceed',
+                        btnClass: 'btn-green',
+                        keys: ['enter', 'shift'],
+                        action: function () {
+                        window.location.href = url;
+                        return true;
+                    }
+                  },
+                    cancel: {
+                        text: 'Cancel',
+                        btnClass: 'btn-red',
+                        action: function ()
+                        {
+                            return true;
+                        }
+                    }
+                }
+            });
+        });
+    })
+</script>
+
+<div class="col-md-12 right-side nopadding">
+
+    @foreach (var p0 in Model.TableNumbers.GroupBy(x => x.IsActive))
+    {
+        foreach (var p in p0.ToList())
+        {
+            var ccolor = "color03";
+
+            if(p0.Key == true)
+            {
+                ccolor = "color07";
+            }
+
+        <div class="col-sm-2 col-xs-4">
+
+            @if (p0.Key == true)
+            {
+                <a href="@Url.Action("OpenTableByCashier", "Pos", new { id = p.TableId, isActive = p0.Key })" class="QuestionWaiter">
+                    <div class="product @ccolor flat-box waves-effect waves-block">
+                        <h3 id="proname">@p.TableId</h3>
+
+                        <div class="maskXX">
+                            <h3>TABLE @p.TableId.ToString()</h3>
+                        </div>
+                    </div>
+                </a>
+            }
+            else
+            {
+                <a href="@Url.Action("OpenTableByCashier", "Pos", new { id = p.TableId, isActive = p0.Key })" class="addPct">
+                    <div class="product @ccolor flat-box waves-effect waves-block">
+                        <h3 id="proname">@p.TableId</h3>
+
+                        <div class="maskXX">
+                            <h3>TABLE @p.TableId.ToString()</h3>
+                        </div>
+                    </div>
+                </a>
+            }
+            
+
+        </div>
+
+        }
+    }
+
+
+
+</div>
+
+
+

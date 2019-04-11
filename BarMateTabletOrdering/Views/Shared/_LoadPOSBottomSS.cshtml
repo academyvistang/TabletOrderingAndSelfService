@@ -1,0 +1,130 @@
+﻿@model BarMateTabletOrdering.Models.CabbashViewModel
+
+<link href="~/confirm/css/jquery-confirm.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+<script src="~/confirm/js/jquery-confirm.js"></script>
+
+<script>
+
+    var DELAY = 700, clicks = 0, timer = null;
+
+    $(function()
+    {
+        $("#ProcDept").on("click", function (e) {
+
+            clicks++;  //count clicks
+
+            if (clicks === 1) {
+
+                timer = setTimeout(function ()
+                {
+                    $("#ProcDept").toggle();
+                    var tableId = '@Model.TableId';
+                    ProcesOrderDept(tableId);  //perform single-click action
+                    clicks = 0;             //after action performed, reset counter
+
+                }, DELAY);
+
+            } else
+            {
+
+                clearTimeout(timer);    //prevent single-click action
+                e.preventDefault();
+                e.stopPropagation();
+                e.stopImmediatePropagation();
+                clicks = 0;             //after action performed, reset counter
+                $.alert({
+                    title: 'Chairman, Abeg Nau!',
+                    content: 'Please can you stop double punching. Only click once!',
+                    type : 'red'
+                });
+
+            }
+
+        })
+    .on("dblclick", function (e)
+    {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        $.alert({
+            title: 'Chairman, Abeg Nau!',
+            content: 'Please can you stop double punching. Only click once!',
+            type: 'red'
+        });
+    });
+
+    });
+
+</script>
+
+
+<div style="clear:both;"></div>
+
+
+
+<div style="margin-bottom:0px;padding-bottom:0px;">
+
+    <div class="row">
+        <div class="row row-horizon">
+            <span class="holdList">
+                <button type="button" onclick="ProcesOrder('@Model.TableId')" style="width:100%;" class="btn btn-success hbtn"><h5 class="text-bold">REVIEW MY ORDER</h5></button>
+            </span>
+        </div>
+    </div>
+
+    <div style="clear:both;"></div>
+
+    @if (Model.CanSendToDepartment)
+    {
+        <div class="row" id="DeptProcess">
+            <div class="row row-horizon">
+                <span class="holdListDept">
+                    <a id="ProcDept" style="width:100%;" class="btn btn-danger hbtn"><h5 class="text-bold">PAY WITH CARD</h5></a>
+                </span>
+            </div>
+        </div>
+
+        <div style="clear:both;"></div>
+
+    }
+
+    @if (Model.CanSendReprocess)
+    {
+        <div class="row" id="DeptReProcess">
+            <div class="row row-horizon">
+                <span class="holdListReDept">
+                    <button type="button" onclick="ReProcesOrder('@Model.TableId')" style="width:100%;" class="btn btn-primary hbtn"><h5 class="text-bold">REPROCESS NO PRINT</h5></button>
+                </span>
+            </div>
+        </div>
+
+        <div style="clear:both;"></div>
+
+    }
+
+
+
+
+
+
+    <div class="table-responsive col-sm-12 totalTab">
+        <table class="table">
+            <tr>
+                <td class="active" width="30%">SubTotal</td>
+                <td class="whiteBg" width="70%">
+                    NGN <span id="Subtot">@Model.Total</span><span class="float-right"><b id="ItemsNum"><span></span> <span id="ItemCount">@Model.TotalItems</span>  items</b></span>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div style="clear:both;"></div>
+
+</div>
+
+
+
+
+
+

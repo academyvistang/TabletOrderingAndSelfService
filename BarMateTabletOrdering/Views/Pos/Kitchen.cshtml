@@ -1,0 +1,62 @@
+﻿
+
+@{
+    ViewBag.Title = "IndexNew";
+    Layout = "~/Views/Shared/_LayoutKitchen.cshtml";
+}
+
+ 
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+
+    <script type="text/javascript">
+
+        $(function ()
+        {
+           
+            getData();
+
+        });
+
+
+
+        function getData()
+        {
+            $.ajax({
+                url: '/Pos/GetKitchenOrders',
+                type: 'GET',
+                datatype: 'html',
+                success: function (data)
+                {
+                    //alert(data.length);
+
+                    if (data.length > 0)
+                    {
+                        $('#tblkitchenInfo').html('');
+                        $('#tblkitchenInfo').html(data);
+
+                        navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
+                        if (navigator.vibrate)
+                        {
+                            navigator.vibrate(60);
+                        }
+
+                        if (data.length > 190)
+                        {
+                            var audio = new Audio('../../audio/rave_digger.mp3');
+                            audio.play();
+                        }
+                    }
+                }
+            });
+        }
+
+    </script>
+
+
+
+
+<div id="tblkitchenInfo">
+
+    <img src="~/images/thumbnailWait.gif" style="display: block;margin-left: auto;margin-right: auto" />
+
+</div>

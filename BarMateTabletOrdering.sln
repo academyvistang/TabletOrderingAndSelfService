@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BarMateTabletOrdering", "BarMateTabletOrdering\BarMateTabletOrdering.csproj", "{15CABFFA-E54F-4F5A-9045-55ACB0C5ED5E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "POSService.Entities", "POSService\POSService.Entities\POSService.Entities.csproj", "{546C9A75-A5B1-451B-88A6-0AE58A41F0AF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{15CABFFA-E54F-4F5A-9045-55ACB0C5ED5E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15CABFFA-E54F-4F5A-9045-55ACB0C5ED5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15CABFFA-E54F-4F5A-9045-55ACB0C5ED5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15CABFFA-E54F-4F5A-9045-55ACB0C5ED5E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{546C9A75-A5B1-451B-88A6-0AE58A41F0AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{546C9A75-A5B1-451B-88A6-0AE58A41F0AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{546C9A75-A5B1-451B-88A6-0AE58A41F0AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{546C9A75-A5B1-451B-88A6-0AE58A41F0AF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

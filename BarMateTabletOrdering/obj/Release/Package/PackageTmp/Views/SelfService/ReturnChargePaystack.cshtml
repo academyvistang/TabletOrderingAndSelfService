@@ -1,0 +1,30 @@
+﻿@model BarMateTabletOrdering.Models.CabbashViewModel
+
+<meta http-equiv="refresh" content="60;url=/selfservice/start/" />
+
+@{
+    ViewBag.Title = "IndexNew";
+    Layout = "~/Views/Shared/_LayoutPOSSelfServiceFull.cshtml";
+}
+<link href="~/confirm/css/jquery-confirm.css" rel="stylesheet" />
+
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/confirm/js/jquery-confirm.js"></script>
+
+<script type="text/javascript">
+
+        $(function ()
+        {
+            $.alert({
+                title: '@Model.LoyaltyTelephone',
+                type: 'red',
+                content: 'You can now track your order with your telephone number. Thank you',
+            });
+            
+        });
+</script>
+
+
+@Html.Partial("_ProductOrders")
+

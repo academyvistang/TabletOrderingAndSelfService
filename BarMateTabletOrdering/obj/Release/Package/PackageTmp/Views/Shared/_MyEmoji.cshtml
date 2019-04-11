@@ -1,0 +1,101 @@
+﻿
+<link href="~/Content/emoji.css" rel="stylesheet" />
+<link href="~/foodcss/base.css" rel="stylesheet" />
+
+
+<section class="header-video" style="width: 100%; height: 812px;">
+    <div id="hero_video">
+        <div id="sub_content" class="animated zoomIn">
+            
+            <div class="col-sm-12">
+
+                <div id="1" class="emoji  emoji--love">
+                    <div class="emoji__heart"></div>
+                </div>
+
+                <div id="2" class="emoji  emoji--wow">
+                    <div class="emoji__face">
+                        <div class="emoji__eyebrows"></div>
+                        <div class="emoji__eyes"></div>
+                        <div class="emoji__mouth"></div>
+                    </div>
+                </div>
+
+                <div id="3" class="emoji  emoji--like">
+                    <div class="emoji__hand">
+                        <div class="emoji__thumb"></div>
+                    </div>
+                </div>
+
+                <div id="4" class="emoji  emoji--yay">
+                    <div class="emoji__face">
+                        <div class="emoji__eyebrows"></div>
+                        <div class="emoji__mouth"></div>
+                    </div>
+                </div>
+
+                <div id="5" class="emoji  emoji--haha">
+                    <div class="emoji__face">
+                        <div class="emoji__eyes"></div>
+                        <div class="emoji__mouth">
+                            <div class="emoji__tongue"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="6" class="emoji  emoji--sad">
+                    <div class="emoji__face">
+                        <div class="emoji__eyebrows"></div>
+                        <div class="emoji__eyes"></div>
+                        <div class="emoji__mouth"></div>
+                    </div>
+                </div>
+
+                <div id="7" class="emoji  emoji--angry">
+                    <div class="emoji__face">
+                        <div class="emoji__eyebrows"></div>
+                        <div class="emoji__eyes"></div>
+                        <div class="emoji__mouth"></div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div><!-- End sub_content -->
+    </div>
+    <img src="img/video_fix.png" alt="" class="header-video--media" data-video-src="video/intro" data-teaser-source="video/intro" data-provider="Vimeo" data-video-width="1920" data-video-height="960" style="display: none;">
+    
+    <video autoplay="autoplay" loop="loop" muted="" id="teaser-video" class="teaser-video"><source src="~/video/intro.mp4" type="video/mp4"><source src="video/intro.ogv" type="video/ogg"></video><iframe id="video" src="http://player.vimeo.com/video/video/intro?title=0&amp;byline=0&amp;portrait=0&amp;color=3d96d2&amp;autoplay=1" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe>
+</section>
+
+
+<script src="~/js/video_header.js"></script>
+
+
+<script>
+
+    $(function ()
+    {
+
+        $(".emoji").click(function (e)
+        {
+            var idEmoj = $(this).attr("id");
+
+            if (idEmoj == 1 || idEmoj == 2 || idEmoj == 3)
+            {
+                $.alert("Wow. It means so much to us that you rate us highly. Thank you very much! Please help us tell your family and friends!");
+            }
+            else if (idEmoj == 5 || idEmoj == 6 || idEmoj == 7)
+            {
+                $.alert("We are really sorry about your experience. Please help us improve by leaving a feedback on cabbash! Please! Thank you.");
+            }
+            else
+            {
+                $.alert("What do you mean ok? Nah joke oh! Please help us improve by leaving a feedback on cabbash! Please! Thank you.");
+            }
+
+        });
+
+    });
+
+ </script>

@@ -1,0 +1,26 @@
+﻿@model List<BarMateTabletOrdering.Models.SoldItem>
+
+<div>
+    <table class="striped fixedlayout">
+        <thead>
+            <tr bgcolor="#9acd32">
+                <th width="25%">Total</th>
+                <th width="25%">Qty</th>
+                <th width="50%">Name</th>
+            </tr>
+        </thead>
+        <tbody id="CasesTableBody1">
+            @foreach (var rm in Model)
+            {
+                <tr border="1">
+                    <td class="tth2">@rm.TotalPrice</td>
+                    <td class="tth2">@rm.Qty</td>
+                    <td class="tth2">@rm.StockItemName</td>
+                </tr>
+            }
+            <tr border="1"><td> = @Model.Sum(x => x.TotalPrice)</td></tr>
+</tbody>
+    </table>
+
+
+</div>

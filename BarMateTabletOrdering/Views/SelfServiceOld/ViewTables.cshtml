@@ -1,0 +1,78 @@
+﻿@model BarMateTabletOrdering.Models.CabbashViewModel
+
+@{
+    ViewBag.Title = "ViewTables";
+    Layout = "~/Views/Shared/_LayoutPOSFull.cshtml";
+}
+
+
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+
+<script>
+    $(function ()
+    {
+        $("#searchProdTable").keyup(function () {
+            // Retrieve the input field text
+            var filter = $(this).val();
+            // Loop through the list
+            $("#tableList2 #proname").each(function () {
+                // If the list item does not contain the text phrase fade it out
+                if ($(this).text().search(new RegExp(filter, "i")) < 0) {
+                    $(this).parent().parent().parent().hide();
+                    // Show the list item if the phrase matches
+                } else {
+                    $(this).parent().parent().parent().show();
+                }
+            });
+        });
+
+    });
+</script>
+
+<div class="col-md-12 right-side nopadding">
+
+  
+
+    <div class="col-sm-12">
+        <div id="searchContaner">
+            <div class="input-group stylish-input-group">
+                <input type="text" id="searchProdTable" class="form-control" placeholder="Search">
+                <span class="input-group-addon">
+                    <button type="submit">
+                        <span class="glyphicon glyphicon-search"></span>
+                    </button>
+                </span>
+            </div>
+        </div>
+    </div>
+   
+
+    <div id="tableList2" style="padding:3px;">
+        <div style="padding:10px;" class="row tablesrow">
+            @foreach (var pg in Model.AllOpenTables.GroupBy(x => x.TableId))
+            { 
+                foreach (var p in pg.ToList())
+                {
+                    var strTable = "tableB" + new Random().Next(1, 4).ToString() + ".svg";
+                    <div class="col-sm-2 col-xs-4 tableList" style="height:auto;">
+                        <span class="tabletime">@p.CreatedDate.ToShortTimeString()</span>
+                        <a href="@Url.Action("Index", "Pos", new { tableId = p.Id, id = 0, tableAlias = p.TableAlias })">
+                            <img src="~/svg/@strTable" />
+                            <h2 id="proname">@p.TableName</h2>
+                        </a>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+
+
+</div>
+
+
+
+
+
+
+
+

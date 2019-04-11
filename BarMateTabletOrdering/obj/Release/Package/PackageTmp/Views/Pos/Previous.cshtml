@@ -1,0 +1,72 @@
+﻿
+
+@{
+    ViewBag.Title = "IndexNew";
+    Layout = "~/Views/Shared/_LayoutPrevious.cshtml";
+}
+
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+@*<script src="~/Scripts/jquery.signalR-2.2.3.min.js"></script>*@
+@*<script src="~/signalr/hubs" type="text/javascript"></script>*@
+
+<script type="text/javascript">
+
+        $(function ()
+        {
+            getData();
+        });
+
+
+
+        function getData() {
+            var $tbl = $('#tblkitchenInfo');
+            $.ajax({
+                url: '/Pos/GetPreviousOrders',
+                type: 'GET',
+                datatype: 'json',
+                success: function (data)
+                {
+                    if (data.kitchenlistStr.length > 0) {
+                        $('#tblkitchenInfo').html('');
+                        $('#tblkitchenInfo').html(data.kitchenlistStr);
+                    }
+
+                    if (data.RingAlarm == 1)
+                    {
+                        var audio = new Audio('../../audio/rave_digger.mp3');
+                        audio.play();
+                    }
+                }
+            });
+        }
+
+        function PlaySoundJump() {
+            var audioElement = document.createElement('audio');
+            audioElement.setAttribute('src', '../../audio/jump.wav');
+            audioElement.setAttribute('autoplay', 'autoplay');
+            audioElement.play();
+        }
+
+        function PlaySoundOver() {
+            var audioElement = document.createElement('audio');
+            audioElement.setAttribute('src', '../../audio/gameover.wav');
+            audioElement.setAttribute('autoplay', 'autoplay');
+            audioElement.play();
+        }
+
+        function PlayerHasPlayedSound() {
+            PlaySoundOver(); PlaySoundOver();
+            PlaySoundOver(); PlaySoundOver(); PlaySoundOver();
+            PlaySoundOver(); PlaySoundOver(); PlaySoundOver(); PlaySoundOver();
+            PlaySoundOver(); PlaySoundOver(); PlaySoundOver(); PlaySoundOver();
+            PlaySoundOver(); PlaySoundOver(); PlaySoundJump(); PlaySoundJump();
+        }
+</script>
+
+
+
+
+<div id="tblkitchenInfo">
+
+</div>

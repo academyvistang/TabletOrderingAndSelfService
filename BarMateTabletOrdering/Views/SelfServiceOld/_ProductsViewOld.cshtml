@@ -1,0 +1,71 @@
+﻿
+@model BarMateTabletOrdering.Models.CabbashViewModel
+
+@foreach (var p in Model.ProductsList)
+{
+    var c = p.CategoryName[0];
+    int index = char.ToUpper(c) - 64;
+
+    string indexer = index.ToString() + ".jpg";
+
+    var ccolor = "color0";
+
+    if (index > 0 && index <= 4)
+    {
+        ccolor = ccolor + "2";
+    }
+    else if (index > 4 && index <= 8)
+    {
+        ccolor = ccolor + "3";
+    }
+    else if (index > 8 && index <= 12)
+    {
+        ccolor = ccolor + "4";
+    }
+    else if (index > 12 && index <= 16)
+    {
+        ccolor = ccolor + "5";
+    }
+    else if (index > 16 && index <= 20)
+    {
+        ccolor = ccolor + "6";
+    }
+    else
+    {
+        ccolor = ccolor + "7";
+    }
+
+    <div class="col-sm-3 col-xs-6">
+        <a href="javascript:void(0)" class="addPct" id="product-@p.Id" onclick="add_posale('@p.Id')">
+            <div class="product @ccolor flat-box waves-effect waves-block" style="width:200px; height:200px; background-image:url(../../Products/Small/@p.PicturePath); background-size: cover;">
+                <h3 id="proname"><span style="background-color:black;">@p.StockItemName</span></h3>
+                <input type="hidden" id="idname-@p.Id" name="name" value="@p.StockItemName" />
+                <input type="hidden" id="idprice-@p.Id" name="price" value="@p.UnitPrice" />
+                <input type="hidden" id="category" name="category" value="@p.CategoryName" />
+                <div class="mask">
+                    <h3>=N @p.UnitPrice</h3>
+                    <p></p><p>@p.Description</p>
+                </div>
+                @*<img src="~/Products/Small/@p.PicturePath" />*@
+                @*<img src="~/images/food.jpg" />*@
+            </div>
+        </a>
+
+        <a onclick="add_pictureRecipe('@p.Id')" style="color:red; cursor:pointer;"><i class="fa fa-picture-o"></i></a>
+
+    </div>
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

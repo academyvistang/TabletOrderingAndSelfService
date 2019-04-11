@@ -1,0 +1,128 @@
+﻿@model BarMateTabletOrdering.Models.CabbashViewModel
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+<link href="~/css/CoolTable.css" rel="stylesheet" />
+
+<div class="row" style="margin:15px; padding:5px; overflow-y:auto; max-height:1000px;" >
+
+
+
+    <div class="row" style="float:left;">
+
+        <div class="col-md-12">
+
+            <div class="col-md-3">
+                @Html.TextBoxFor(m => m.StartDate)
+            </div>
+
+            <div class="col-md-3">
+                @Html.TextBoxFor(m => m.EndDate)
+            </div>
+
+            <div class="col-md-3">
+                <form action="/Audit/PrintPos/" method="post">
+
+                    @Html.HiddenFor(m => m.StartDate)
+
+                    @Html.HiddenFor(m => m.EndDate)
+
+                    @if (Model.WeHaveOpenTables)
+                    {
+                        <input type="button" class="btn btn-danger" value="You have open tables.Pls Close" />
+                    }
+                    else
+                    {
+                        <input type="submit" class="btn btn-primary" value="Print And Close" />
+                    }
+
+
+                </form>
+            </div>
+
+        </div>
+
+       
+
+    </div>
+
+    <div class="col-md-12">
+
+        <div>
+            <table class="striped fixedlayout">
+                <thead>
+                    <tr>
+                        <th width="20%">Total</th>
+                        <th width="20%">Total Cash</th>
+                        <th width="20%">Total POS</th>
+                        <th width="20%">Total Transfer</th>
+                        <th width="20%">Total Credit</th>
+                    </tr>
+                </thead>
+                <tbody id="CasesTableBody1">
+
+                    <tr border="1">
+                        <td class="tth2">@Model.AllPayments.Sum(x => x.Payment.Total)</td>
+                        <td class="tth2">@Model.AllPayments.Sum(x => x.Payment.TotalCash)</td>
+                        <td class="tth2">@Model.AllPayments.Sum(x => x.Payment.TotalPOS)</td>
+                        <td class="tth2">@Model.AllPayments.Sum(x => x.Payment.TotalTransfer)</td>
+                        <td class="tth2">@Model.AllPayments.Sum(x => x.Payment.TotalCredit)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+
+        </div>
+
+        <br />
+
+        <hr />
+
+
+    @if (Model.AllPayments.Any())
+    {
+
+        foreach (var tb in Model.AllPayments)
+        {
+            <div>
+                <table class="striped fixedlayout">
+                    <thead>
+                        <tr>
+                            <th width="20%">Total</th>
+                            <th width="20%">TotalCash</th>
+                            <th width="20%">TotalPOS</th>
+                            <th width="20%">TotalTransfer</th>
+                            <th width="20%">TotalCredit</th>
+                            <th width="20%">Time</th>
+
+
+                        </tr>
+                    </thead>
+                    <tbody id="CasesTableBody1">
+
+                        <tr border="1">
+                            <td class="tth2">@tb.Payment.Total</td>
+                            <td class="tth2">@tb.Payment.TotalCash</td>
+                            <td class="tth2">@tb.Payment.TotalPOS</td>
+                            <td class="tth2">@tb.Payment.TotalTransfer</td>
+                            <td class="tth2">@tb.Payment.TotalCredit</td>
+                            <td class="tth2">@tb.Payment.PaymentDate</td>
+
+                        </tr>
+                    </tbody>
+                </table>
+
+
+            </div>
+            @Html.Partial("_AccountTable", tb.SoldItems)
+            <div style="clear:both;"></div>
+            <hr />
+        }
+    }
+    else
+    {
+    <p>There are no accounts</p>
+    }
+
+    </div>
+
+</div>
+

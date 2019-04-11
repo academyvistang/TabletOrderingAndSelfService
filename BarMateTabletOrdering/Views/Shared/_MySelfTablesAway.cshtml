@@ -1,0 +1,95 @@
+﻿@model BarMateTabletOrdering.Models.CabbashViewModel
+
+<link href="~/css/Style-Light.css" rel="stylesheet" />
+
+<script>
+    $(function()
+    {
+        $('.noajax').unbind('click');
+
+        $('.noajax').click(function (e) {
+            var href = $(this).attr("href");
+            e.preventDefault();
+            e.stopPropagation();
+            window.location.href = href;
+        });
+
+        $(".QuestionWaiter").click(function (e)
+        {
+            var url = $(this).attr("href");
+
+            e.stopPropagation();
+            e.preventDefault();
+
+            $.confirm({
+                title: 'Please Confirm!',
+                content: 'Do you want to add to an existing table?',
+                 titleClass: 'BigTittle',
+                boxWidth: '50%',
+                buttons: {
+                    confirm: {
+                        text: 'Proceed',
+                        btnClass: 'btn-green',
+                        keys: ['enter', 'shift'],
+                        action: function () {
+                        window.location.href = url;
+                        return true;
+                    }
+                  },
+                    cancel: {
+                        text: 'Cancel',
+                        btnClass: 'btn-red',
+                        action: function ()
+                        {
+                            return true;
+                        }
+                    }
+                }
+            });
+        });
+    })
+</script>
+
+
+<div class="col-md-12 right-side nopadding">
+
+    <div id="tableList2" style="padding:3px;">
+        <div style="padding:10px;" class="row tablesrow">
+            @foreach (var p0 in Model.TableNumbers.GroupBy(x => x.IsActive))
+            {
+                foreach (var p in p0.ToList())
+                {
+                    if(p.TableId > 100)
+                    {
+                        p.TableId = p.TableId - 100;
+                    }
+
+                    var isCaps = true;
+                    Char c = (Char)((isCaps ? 65 : 97) + (p.TableId - 1));
+                    var strTable = "tableB" + new Random().Next(1, 4).ToString() + ".svg";
+                    <div class="col-sm-2 col-xs-4 tableList" style="height:auto;">
+
+                        @if (p0.Key == true)
+                        {
+                            <a class="noajax" href="@Url.Action("OpenTableByCashier", "SelfService", new { id = p.TableId, isActive = p0.Key, takeaway = true, point = c })">
+                                <img src="~/svg/@strTable" />
+                                <h2 id="proname">POINT @c</h2>
+                            </a>
+                        }
+                        else
+                        {
+                            <a class="noajax" href="@Url.Action("OpenTableByCashier", "SelfService", new { id = p.TableId, isActive = p0.Key, takeaway = true, point = c })">
+                                <img src="~/svg/@strTable" />
+                                <h2 id="proname">POINT @c</h2>
+                            </a>
+                        }
+
+                    </div>
+                }
+            }
+        </div>
+    </div>
+
+
+</div>
+

@@ -1,0 +1,58 @@
+﻿@model BarMateTabletOrdering.Models.MovieViewModel
+
+<div class="pages">
+
+    <div data-page="index" class="page homepage">
+        <div class="page-content">
+
+            <div class="navbarpages">
+
+                <div class="navbar_left">
+                    <div class="logo_text"><a href="@Url.Action("Index","Home")">CABBASH</a></div>
+                </div>
+
+            </div>
+
+            <div data-autoplay="3000" style="height:100%;" class="swiper-container slidertoolbar swiper-init" data-effect="slide" data-parallax="true" data-next-button=".swiper-button-next" data-prev-button=".swiper-button-prev">
+                <div class="swiper-wrapper">
+
+                    @foreach (var d in Model.StockList)
+                    {
+                        <div class="swiper-slide" style="background-image:url(../../images/1/Menu/@d.PicturePath);">
+                            <div class="slider_trans">
+                                <div class="slider-caption">
+                                    <span class="subtitle" data-swiper-parallax="-60%">@d.StockItemName</span>
+                                    <h2 data-swiper-parallax="-100%">NGN @decimal.Round(d.UnitPrice, 2)</h2>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                </div>
+                <div class="swiper-pagination"></div>
+                <div class="swiper-button-prev"></div>
+                <div class="swiper-button-next"></div>
+            </div>
+
+            <div class="swiper-container-toolbar swiper-toolbar swiper-init" data-effect="slide" data-slides-per-view="1" data-slides-per-group="1" data-space-between="0" data-pagination=".swiper-pagination-toolbar">
+                <div class="swiper-pagination-toolbar"></div>
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide toolbar-icon">
+
+                        <a href="@Url.Action("ViewMenu","Home",  new { id = Model.PlaceId, catId = 0 })" data-view=".view-main"><img src="~/images/icons/red/menu.png" alt="" title="" /><span>ALL</span></a>
+                       
+                        @foreach (var ca in Model.ProductCategories)
+                        {
+                            <a href="@Url.Action("ViewMenu","Home",  new { id = Model.PlaceId, catId = ca.Id })" data-view=".view-main"><img src="~/images/icons/red/food.png" alt="" title="" /><span>@ca.Name</span></a>
+                        }
+                       
+                    </div>
+
+
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>

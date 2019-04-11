@@ -1,0 +1,78 @@
+﻿@model BarMateTabletOrdering.Models.KitchenModel
+
+
+
+
+@{ var mmmm1 = Model.List.GroupBy(x => x.DateSold.ToString()).Select(y => new BarMateTabletOrdering.Models.LatestGroupByModel { DatesoldStr = y.Key,
+        DepartmentRecieved = y.ToList().FirstOrDefault().StoreFulfilled, Items = y.ToList(),
+        Datesold = y.ToList().FirstOrDefault().DateSold, ValueIds = y.ToList().Select(z => z.Id.ToString()).ToDelimitedString(",") }).ToList();}
+
+
+
+
+
+@foreach (var rmm in mmmm1)
+{
+    var strCol = ""; if (DateTime.Now.Subtract(rmm.Items.FirstOrDefault().DateSold).Minutes > 30) { strCol = "#ef2f4f"; }
+
+    if (!rmm.DepartmentRecieved)
+    {
+        <div>
+            <form method="post" class="signinReceived" action="@Url.Action("PlaceOrderDoneByKitchenReceived", "Pos")">
+                @Html.Hidden("ValueIds", rmm.ValueIds)
+                <input style="float:left;" class="submit btn-primary" name="PrintOrReceived" type="submit" value="RECEIVED" />
+            </form>
+        </div>
+
+    }
+
+
+    <div style="clear:both;"></div>
+
+    <div class="col-md-2" style="margin-top:10px;">
+
+        <div>
+            <table class="table table-striped table-bordered table-list" style="background-color:@strCol">
+                <tbody>
+                    <tr bgcolor="pink">
+                        <td><span style="font-size:24px; text-decoration:solid;" >@rmm.DatesoldStr</span></td>
+                    </tr>
+                    <tr bgcolor="pink">
+                        <td>@rmm.Items.FirstOrDefault().TableName</td>
+                    </tr>
+                  
+                    <tr bgcolor="pink">
+                        <td>@((rmm.Items.Where(x => x.Note != "NONE").LastOrDefault() != null) ? rmm.Items.Where(x => x.Note != "NONE").LastOrDefault().Note : "")   </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div>
+            <form method="post" class="signin PLSCONFIRM" action="@Url.Action("PlaceOrderDoneByKitchen", "Pos")">
+                @Html.Hidden("ValueIds", rmm.ValueIds)
+                <input style="float:right;" class="submit btn-success" name="PrintOrComplete" type="submit" value="COMPLETED" />
+            </form>
+        </div>
+
+    </div>
+
+    <div class="col-md-10">
+        @Html.Partial("_KitchenTableGroupNew", rmm)
+    </div>
+   
+
+    <div style="clear:both;"></div>
+    <hr />
+
+}
+
+
+
+
+
+
+
+
+
+

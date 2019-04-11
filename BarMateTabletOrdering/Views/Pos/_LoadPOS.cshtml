@@ -1,0 +1,214 @@
+﻿@model BarMateTabletOrdering.Models.CabbashViewModel
+
+<script type="text/javascript">
+    $(".incbutton").off("click");
+    $(".decbutton").off("click");
+
+    $(".incbutton").on("click", function () {
+        var $button = $(this); var oldValue = $button.parent().parent().find("input").val();
+        var newVal = parseFloat(oldValue) + 1; $button.parent().parent().find("input").val(newVal);
+        edit_posale($button.parent().parent().find("input").attr("id").slice(3),1);
+    });
+    $(".decbutton").on("click", function () {
+        var $button = $(this); var oldValue = $button.parent().parent().find("input").val();
+        if (oldValue > 1) { var newVal = parseFloat(oldValue) - 1; } else { newVal = 1; }
+        $button.parent().parent().find("input").val(newVal);
+        edit_posale($button.parent().parent().find("input").attr("id").slice(3),0);
+    });
+</script>
+
+@{
+    var activeList = Model.ExistingList.Where(x => x.IsActive && x.SentToPOS).GroupBy(x => x.StoreFulfilled).Select(y => new BarMateTabletOrdering.Models.LatestGroupByQty
+    {
+        RealItemList = y.ToList(),
+        StockItemName = y.ToList().FirstOrDefault().StockItemName,
+        Qty = y.ToList().Sum(x => x.Qty),
+        DateSold = y.ToList().FirstOrDefault().DateSold,
+        StockItemPrice = y.ToList().FirstOrDefault().StockItemPrice,
+        DepartmentReceived = y.Key
+    }).ToList();
+
+    var nonActiveList = Model.ExistingList.Where(x => !x.IsActive && !x.SentToPOS).ToList();
+    var readyToPrintList = Model.ExistingList.Where(x => !x.IsActive && x.SentToPOS).ToList();
+
+    var userRole = Roles.GetRolesForUser().FirstOrDefault();
+
+
+  }
+
+
+
+
+@foreach (var itemx in activeList)
+{
+    foreach (var item in itemx.RealItemList.GroupBy(x => x.StockItemId).Select(y => new BarMateTabletOrdering.Models.LatestGroupByQty
+    {
+        StockItemId = y.Key,
+        TableItemId = y.ToList().FirstOrDefault().Id,
+        StockItemName = y.ToList().FirstOrDefault().StockItemName,
+        Qty = y.ToList().Sum(x => x.Qty),
+        DateSold = y.ToList().FirstOrDefault().DateSold,
+        StockItemPrice = y.ToList().FirstOrDefault().StockItemPrice
+    }).ToList())
+    {
+        <div class="col-xs-12" style="font-family:Candara;">
+            <div class="panel panel-default product-details" style="color:black;">
+                <div class="panel-body">
+                    <div class="col-xs-7 nopadding">
+
+               @if (itemx.DepartmentReceived)
+               {
+                   if (userRole.StartsWith("MANAGER"))
+                   {
+                       <div class="col-xs-2 nopadding">
+                        <a href="javascript:void(0)" onclick="delete_posaleManager('@item.TableItemId')">
+                            <span class="fa-stack fa-sm productD">
+                                <i class="fa fa-circle fa-stack-2x add-product">
+                                </i><i class="fa fa-thumbs-up fa-stack-1x fa-fw fa-inverse"></i>
+                            </span>
+                        </a>
+                    </div>
+                   }
+                   else
+                   {
+
+                        <div class="col-xs-2 nopadding">
+                        <a href="javascript:void(0)">
+                            <span class="fa-stack fa-sm productD">
+                                <i class="fa fa-circle fa-stack-2x add-product">
+                                </i><i class="fa fa-thumbs-up fa-stack-1x fa-fw fa-inverse"></i>
+                            </span>
+                        </a>
+                    </div>
+                   }
+
+               }
+               else
+               {
+                   if (userRole.StartsWith("MANAGER"))
+                   {
+                      <div class="col-xs-2 nopadding">
+                        <a href="javascript:void(0)" onclick="delete_posaleManager('@item.TableItemId')">
+                            <span class="fa-stack fa-sm productD">
+                                <i class="fa fa-circle fa-stack-2x delete-product">
+                                </i><i class="fa fa-thumbs-down fa-stack-1x fa-fw fa-inverse"></i>
+                            </span>
+                        </a>
+                    </div>
+                   }
+                   else
+                   {
+                      <div class="col-xs-2 nopadding">
+                        <a href="javascript:void(0)">
+                            <span class="fa-stack fa-sm productD">
+                                <i class="fa fa-circle fa-stack-2x delete-product">
+                                </i><i class="fa fa-thumbs-down fa-stack-1x fa-fw fa-inverse"></i>
+                            </span>
+                        </a>
+                    </div>
+                   }
+
+               }
+
+
+
+                        <div class="col-xs-10 nopadding">
+                            <span class="textPD" style="font-size:0.9em; padding-left:2px;"><strong>@item.StockItemName</strong></span>
+                        </div>
+                    </div>
+                    <div class="col-xs-3 nopadding productNum">
+                        <input type="text" id="qt-@item.StockItemId" disabled="disabled" class="form-control" value="@item.Qty" placeholder="0" maxlength="2">
+                    </div>
+                    <div class="col-xs-2 nopadding "><span class="subtotal textPD">@decimal.Round(item.StockItemPrice * item.Qty, 0) </span></div>
+                </div>
+            </div>
+        </div>
+    }
+
+}
+
+<div id="ThisIsNonActive">
+
+    @foreach (var item in readyToPrintList)
+    {
+        <div style="width:100%;padding-right:0px;margin-right:0px;">
+
+            <div class="col-xs-12" style="font-family:Candara;">
+                <div class="panel panel-default product-details" style="color:blue;">
+                    <div class="panel-body" style="padding:3px;">
+                        <div class="col-xs-6 nopadding">
+                            <div class="col-xs-2 nopadding">
+                                <a href="javascript:void(0)" onclick="delete_posale('@item.Id')">
+                                    <span class="fa-stack fa-sm productD">
+                                        <i class="fa fa-circle fa-stack-2x delete-product" style="color:blue;">
+                                        </i><i class="fa fa-times fa-stack-1x fa-fw fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </div><div class="col-xs-10 nopadding">
+                                <span class="textPD" style="font-size:0.7em; padding-left:2px;"><strong><a style="color:blue;" class="SingleNote" id="@item.Id">@item.StockItemName</a></strong></span>
+                            </div>
+                        </div>
+                        @*<div class="col-xs-3 nopadding productNum">
+                                <input type="text" id="qt-@item.StockItemId" class="form-control" value="@item.Qty" placeholder="0" maxlength="2">
+                            </div>*@
+                        <div class="col-xs-4 nopadding productNum">
+                            <a href="javascript:void(0)">
+                                    <span class="fa-stack fa-sm decbutton"><i class="fa fa-square fa-stack-2x light-grey"></i><i class="fa fa-minus fa-stack-1x fa-inverse white"></i></span>
+                                </a>
+                            <input type="text" id="qt-@item.Id" onblur="edit_posale('@item.Id')" class="form-control" min="1" value="@item.Qty" placeholder="0" maxlength="2">
+                            <a href="javascript:void(0)"><span class="fa-stack fa-sm incbutton"><i class="fa fa-square fa-stack-2x light-grey"></i><i class="fa fa-plus fa-stack-1x fa-inverse white"></i></span></a>
+                        </div>
+                        <div class="col-xs-2 nopadding "><span class="subtotal textPD">@decimal.Round(item.StockItemPrice * item.Qty, 0)  </span></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    }
+
+    @foreach (var item in nonActiveList)
+    {
+        <div style="width:100%;padding-right:0px;margin-right:0px;">
+
+
+            <div class="col-xs-12" style="font-family:Candara;">
+                <div class="panel panel-default product-details" style="color:darkseagreen;">
+                    <div class="panel-body" style="padding:3px;">
+                        <div class="col-xs-6 nopadding">
+                            <div class="col-xs-2 nopadding">
+                                <a href="javascript:void(0)" onclick="delete_posale('@item.Id')">
+                                    <span class="fa-stack fa-sm productD">
+                                        <i class="fa fa-circle fa-stack-2x delete-product" style="color:green;">
+                                        </i><i class="fa fa-times fa-stack-1x fa-fw fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </div><div class="col-xs-10 nopadding">
+                                <span class="textPD" style="font-size:0.7em; padding-left:2px;"><strong><a style="color:green;" class="SingleNote" id="@item.Id">@item.StockItemName</a></strong></span>
+                            </div>
+                        </div>
+                        @*<div class="col-xs-3 nopadding productNum">
+                                <input type="text" id="qt-@item.StockItemId" class="form-control" value="@item.Qty" placeholder="0" maxlength="2">
+                            </div>*@
+                        <div class="col-xs-4 nopadding productNum">
+                            <a href="javascript:void(0)">
+                                <span class="fa-stack fa-sm decbutton"><i class="fa fa-square fa-stack-2x light-grey"></i><i class="fa fa-minus fa-stack-1x fa-inverse white"></i></span>
+                            </a>
+                            <input type="text" id="qt-@item.Id" onblur="edit_posale('@item.Id')" class="form-control" min="1" value="@item.Qty" placeholder="0" maxlength="2">
+                            <a href="javascript:void(0)"><span class="fa-stack fa-sm incbutton"><i class="fa fa-square fa-stack-2x light-grey"></i><i class="fa fa-plus fa-stack-1x fa-inverse white"></i></span></a>
+                        </div>
+                        <div class="col-xs-2 nopadding "><span class="subtotal textPD">@decimal.Round(item.StockItemPrice * item.Qty, 0)  </span></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    }
+
+</div>
+
+
+
+
+
+
+

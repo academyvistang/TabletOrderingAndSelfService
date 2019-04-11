@@ -1,0 +1,85 @@
+﻿
+@model BarMateTabletOrdering.Models.CabbashViewModel
+
+
+<style>
+    .omon {
+        box-shadow: 4px 5px 25px rgba(0,0,0,0.6);
+        display: inline;
+        background: #fff;
+        border-radius: 10px;
+        font-size: 18px;
+        padding: 15px;
+        opacity: 1;
+        position: absolute;
+        top: 0;
+        right: 0;
+        transform: translateY(10px);
+        transition: 1s ease-in-out;
+        animation: twitch 2s ease-in-out 1s 3;
+    }
+</style>
+
+
+
+@foreach (var p in Model.ProductsList)
+{
+    var c = p.CategoryName[0];
+    int index = char.ToUpper(c) - 64;
+
+    var ccolor = "color0";
+
+    if (index > 0 && index <= 4)
+    {
+        ccolor = ccolor + "2";
+    }
+    else if (index > 4 && index <= 8)
+    {
+        ccolor = ccolor + "3";
+    }
+    else if (index > 8 && index <= 12)
+    {
+        ccolor = ccolor + "4";
+    }
+    else if (index > 12 && index <= 16)
+    {
+        ccolor = ccolor + "5";
+    }
+    else if (index > 16 && index <= 20)
+    {
+        ccolor = ccolor + "6";
+    }
+    else
+    {
+        ccolor = ccolor + "7";
+    }
+
+    <div class="col-sm-2 col-xs-4">
+        <a href="#" class="addPct" id="product-@p.Id" onclick="add_posaleBlank('@p.Id')">
+            <div class="product @ccolor flat-box waves-effect waves-block">
+                <h3 id="proname">@p.StockItemName</h3>
+                <input type="hidden" id="idname-@p.Id" name="name" value="@p.StockItemName" />
+                <input type="hidden" id="idprice-@p.Id" name="price" value="@p.UnitPrice" />
+                <input type="hidden" id="category" name="category" value="@p.CategoryName" />
+                <div class="maskXX">
+                    <h3>=N @p.UnitPrice</h3>
+                    <p></p><p>@p.Description</p>
+                </div>
+            </div>
+        </a>
+
+        <a onclick="add_picture('@p.PicturePath')" style="color:red; cursor:pointer;"><i class="fa fa-picture-o"></i></a>
+
+    </div>
+
+}
+
+
+
+
+
+
+
+
+
+

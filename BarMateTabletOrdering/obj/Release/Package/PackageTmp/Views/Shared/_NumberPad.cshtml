@@ -1,0 +1,42 @@
+﻿
+<style>
+    p { -webkit-text-security: disc; }
+</style>
+
+
+
+<div class="easy-numpad-frame" id="easy-numpad-frame">
+    <div class="easy-numpad-container">
+        <div class="easy-numpad-output-container">
+            <p class="easy-numpad-output" style="text-decoration:solid; font-size:36px;" id="easy-numpad-output"></p>
+        </div>
+        <div class="easy-numpad-number-container">
+            <table>
+                <tr>
+                    <td><a href="7" onclick="easynum(7)">7</a></td>
+                    <td><a href="8" onclick="easynum(8)">8</a></td>
+                    <td><a href="9" onclick="easynum(9)">9</a></td>
+                    <td><a href="Del" class="del" id="del" onclick="easynum(-1)">Del</a></td>
+                </tr>
+                <tr>
+                    <td><a href="4" onclick="easynum(4)">4</a></td>
+                    <td><a href="5" onclick="easynum(5)">5</a></td>
+                    <td><a href="6" onclick="easynum(6)">6</a></td>
+                    <td><a href="Clear" class="clear" id="clear" onclick="easynum(-1)">Clear</a></td>
+                </tr>
+                <tr>
+                    <td><a href="1" onclick="easynum(1)">1</a></td>
+                    <td><a href="2" onclick="easynum(2)">2</a></td>
+                    <td><a href="3" onclick="easynum(3)">3</a></td>
+                    <td><a href="#" class="close-popup cancel" id="cancel" onclick="easy_numpad_cancel()">Cancel</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" onclick="easynum(0)"><a href="0">0</a></td>
+                    <td onclick="easynum()"><a href=".">.</a></td>
+                    <td><a href="Done" class="done" id="done" onclick="easy_numpad_done()">Done</a></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>

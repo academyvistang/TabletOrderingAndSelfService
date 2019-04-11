@@ -1,0 +1,198 @@
+﻿@model BarMateTabletOrdering.Models.LatestGroupByModel 
+
+<style>
+    .omon {
+        box-shadow: 4px 5px 25px rgba(0,0,0,0.6);
+        display: inline;
+        background: #fff;
+        border-radius: 10px;
+        font-size: 18px;
+        padding: 5px;
+        opacity: 1;
+        position: absolute;
+        top: 0;
+        right: -10;
+        transform: translateY(10px);
+        transition: 1s ease-in-out;
+        animation: twitch 2s ease-in-out 1s 3;
+    }
+    .odion {
+        box-shadow: 4px 5px 25px rgba(0,0,0,0.6);
+        display: inline;
+        background: #fff;
+        border-radius: 10px;
+        font-size: 18px;
+        padding: 5px;
+        opacity: 1;
+        position: absolute;
+        bottom: 0;
+        right: -10;
+        transform: translateY(10px);
+        transition: 1s ease-in-out;
+        animation: twitch 2s ease-in-out 1s 3;
+    }
+</style>
+
+@{var modelList = Model.Items;}
+
+
+
+
+@{ var mmmm1 = modelList.GroupBy(x => x.ItemId).Select(y => new BarMateTabletOrdering.Models.LatestGroupByQty
+    {
+        ItemNotes = y.ToList().Where(c => !string.IsNullOrEmpty(c.ItemNote)).Select(x => x.ItemNote).ToDelimitedString(","),
+        ItemNote = y.ToList().FirstOrDefault().ItemNote,
+        CategoryName = y.ToList().FirstOrDefault().CategoryName,
+        TableItemId = y.ToList().FirstOrDefault().Id,
+        StockItemName = y.ToList().FirstOrDefault().StockItemName,
+        Qty = y.ToList().Sum(x => x.Qty),
+        DateSold = y.ToList().FirstOrDefault().DateSold,
+        Note = y.ToList().FirstOrDefault().Note,
+        Takeaway = y.ToList().FirstOrDefault().Takeaway,
+        PaidInFull = y.ToList().FirstOrDefault().PaidInFull
+    }).ToList();}
+
+
+
+
+@foreach (var p in mmmm1)
+{
+    var c = p.CategoryName[0];
+
+    int index = char.ToUpper(c) - 64;
+
+    var ccolor = "color0";
+
+    if (index > 0 && index <= 4)
+    {
+        ccolor = ccolor + "2";
+    }
+    else if (index > 4 && index <= 8)
+    {
+        ccolor = ccolor + "3";
+    }
+    else if (index > 8 && index <= 12)
+    {
+        ccolor = ccolor + "4";
+    }
+    else if (index > 12 && index <= 16)
+    {
+        ccolor = ccolor + "5";
+    }
+    else if (index > 16 && index <= 20)
+    {
+        ccolor = ccolor + "6";
+    }
+    else
+    {
+        ccolor = ccolor + "7";
+    }
+
+    <div class="col-sm-2 col-xs-4">
+
+        @if (p.Takeaway)
+        {
+            <a class="omon" style="color:red; cursor:pointer;"><i class="fa fa-motorcycle"></i></a>
+        }
+        else if (p.PaidInFull)
+        {
+            <a class="omon" style="color:red; cursor:pointer;"><i class="fa fa-credit-card"></i></a>
+        }
+        else
+        {
+            <a class="omon" style="color:red; cursor:pointer;"><i class="fa fa-user-plus"></i></a>
+        }
+
+        @if (!string.IsNullOrEmpty(p.ItemNotes))
+        {
+            <a class="odion" onclick="Show_Note('@p.ItemNotes')" style="color:red; cursor:pointer;"><i class="fa fa-newspaper-o"></i></a>
+        }
+       
+       
+
+        <a href="@Url.Action("PlaceOrderDoneByKitchenSingle", "Pos", new { id = p.TableItemId })" class="addPct PLSCONFIRMJAX" id="product-@p.TableItemId">
+            <div class="product @ccolor flat-box waves-effect waves-block" style="height:auto;">
+
+                <h3 id="proname">@p.StockItemName</h3>
+                <h5 id="proname">@p.Qty</h5>
+                <div class="maskXX" style="margin:5px;padding:5px;">
+                    <h3>@p.DateSold.ToShortTimeString()</h3>
+                </div>
+            </div>
+        </a>
+
+    </div>
+
+}
+
+
+
+
+
+
+
+
+@*<div class="panel panel-default panel-table">
+    <div class="panel-heading" style="background-color:@strCol">
+        <div class="row">
+            <div class="col col-xs-6">
+                <h3 class="panel-title">@modelList.FirstOrDefault().TableName (@DateTime.Now.Subtract(modelList.FirstOrDefault().DateSold).Minutes mins ago)</h3>
+            </div>
+            <div class="col col-xs-6 text-right">
+                <form method="post" class="signin PLSCONFIRM" action="@Url.Action("PlaceOrderDoneByKitchen", "Pos")">
+                    @Html.Hidden("ValueIds", Model.ValueIds)
+                    <input style="float:right;" class="submit btn-success" name="PrintOrComplete" type="submit" value="COMPLETED" />
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="panel-body">
+        <table class="table table-striped table-bordered table-list">
+            @{ int p = 0;}
+            <tbody>
+            @foreach (var rm in mmmm1)
+            {
+                var k = p % 2 != 0;
+
+                <tr bgcolor="pink">
+                    <td><a href="@Url.Action("PlaceOrderDoneByKitchenSingle", "Pos", new { id = rm.TableItemId })" class="btn btn-primary PLSCONFIRM"> <em class="fa fa-credit-card"></em> DONE </a></td>
+
+                    <td align="center">
+
+
+                        @if (rm.Takeaway)
+                        {
+                            <a class="btn btn-danger"><em class="fa fa-motorcycle"></em></a>
+                        }
+
+                        @if (rm.PaidInFull)
+                        {
+                            <a class="btn btn-danger"><em class="fa fa-credit-card"></em></a>
+                        }
+                       
+                    </td>
+
+                    @if (!k)
+                    {
+                        <td><span style="color:black;">@rm.Note</span></td>
+                        <td><span style="color:black; font-size:26px; text-decoration:solid;">@rm.StockItemName</span></td>
+                        <td><span style="color:black;">@rm.Qty</span></td>
+                    }
+                    else
+                    {
+                        <td><span style="color:black;">@rm.Note</span></td>
+                        <td><span style="color:black; font-size:26px; text-decoration:solid;">@rm.StockItemName</span></td>
+                        <td><span style="color:black;">@rm.Qty</span></td>
+                    }
+
+                </tr>
+
+                p++;
+            }
+
+            </tbody>
+        </table>
+
+    </div>
+
+</div>*@

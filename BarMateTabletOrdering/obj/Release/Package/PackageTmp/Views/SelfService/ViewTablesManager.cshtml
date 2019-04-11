@@ -1,0 +1,96 @@
+﻿@model BarMateTabletOrdering.Models.CabbashViewModel
+
+@{
+    ViewBag.Title = "ViewTables";
+    Layout = "~/Views/Shared/_LayoutPOSFullTablesManager.cshtml";
+}
+
+
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+
+<script>
+    $(function ()
+    {
+        $("#searchProdTable").keyup(function () {
+            // Retrieve the input field text
+            var filter = $(this).val();
+
+            //alert(filter);
+            // Loop through the list
+            $("#tableList13 #proname").each(function ()
+            {
+
+                // If the list item does not contain the text phrase fade it out
+                if ($(this).text().search(new RegExp(filter, "i")) < 0)
+                {
+
+                    $(this).parent().parent().hide();
+                }
+                else
+                {
+                    $(this).parent().parent().show();
+                }
+            });
+        });
+
+    });
+</script>
+
+<div class="col-md-12 right-side nopadding">
+
+
+    @if (Model.AllOpenTables.Any())
+    {
+        <div class="col-sm-12">
+            <div id="searchContaner">
+                <div class="input-group stylish-input-group">
+                    <input type="text" id="searchProdTable" class="form-control" placeholder="Search">
+                    <span class="input-group-addon">
+                        <button type="submit">
+                            <span class="glyphicon glyphicon-search"></span>
+                        </button>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+
+        <div id="tableList13" style="padding:3px;">
+            <div style="padding:10px;" class="row tablesrow">
+                @foreach (var pg in Model.AllOpenTables.GroupBy(x => x.TableId))
+                {
+                    foreach (var p in pg.ToList())
+                    {
+                        var strTable = "tableB" + new Random().Next(1, 4).ToString() + ".svg";
+                        <div class="col-sm-2 col-xs-4 tableList" style="height:auto;">
+                            <span class="tabletime">@p.CreatedDate.ToShortTimeString()</span>
+                            <span class="tabletimeXX"><span style="color:red; text-decoration:solid; font-size:12px; text-align:center; padding-left:5px;">N @decimal.Round(p.TableTotal, 0).ToString("#,##0.##")</span></span>
+
+                            <br />
+                            <a href="@Url.Action("Index", "Pos", new { tableId = p.Id, id = 0, tableAlias = p.TableAlias })">
+                                <img height="100" width="100" src="~/svg/@strTable" />
+                                <h6 id="proname">@p.TableName.Replace("Table","").Trim()</h6>
+                            </a>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    }
+    else
+    {
+        <p style="color:red;">You have no open tables!</p>
+    }
+
+
+
+
+</div>
+
+
+
+
+
+
+
+

@@ -1,0 +1,8 @@
+﻿@model BarMateTabletOrdering.Models.CabbashViewModel
+
+
+
+<div class="form-group" id="ActiveDropDown">
+    @Html.ListBoxFor(x => x.RightTableIds, (MultiSelectList)Model.MultiSelect, new {@readonly="readonly", @disabled= "disabled", @style = "width:100%;height:150px;", @class = "js-select-options form-control" })
+</div>
+

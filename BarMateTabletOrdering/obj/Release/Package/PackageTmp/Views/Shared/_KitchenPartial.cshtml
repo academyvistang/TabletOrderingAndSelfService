@@ -1,0 +1,149 @@
+﻿@model BarMateTabletOrdering.Models.CabbashViewModel
+
+
+<div id="tblkitchenInfo">
+    @Html.Partial("_KitchenPartialZero")
+</div>
+
+<link href="~/confirm/css/jquery-confirm.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/confirm/js/jquery-confirm.js"></script>
+
+<script>
+
+    $(function ()
+    {
+        
+        $('.PLSCONFIRMJAX').unbind('click');
+
+        $(".PLSCONFIRMJAX").click(function (e)
+        {
+            var url = $(this).attr("href");
+
+            e.preventDefault();
+            e.stopPropagation();
+
+            $.confirm({
+                title: 'Please Confirm!',
+                content: 'Complete or not!',
+                buttons:
+                    {
+                        confirm:
+                            {
+                                text: 'Complete Order',
+                                btnClass: 'btn-green',
+                                action: function ()
+                                {
+                                        $.ajax({
+                                            url: url,
+                                            type: 'GET',
+                                            datatype: 'html',
+                                            success: function (data)
+                                            {
+                                                $('#tblkitchenInfo').html('');
+                                                $('#tblkitchenInfo').html(data);
+
+                                                navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
+                                                if (navigator.vibrate) {
+                                                    navigator.vibrate(60);
+                                                }
+                                            }
+                                        });
+
+                                        return true;
+                                }
+                    },
+                        cancel: function ()
+                        {
+                            return true;
+                    },
+                        somethingElse:
+                            {
+                        text: 'Cannot Fulfill Order',
+                        btnClass: 'btn-red',
+                        action: function ()
+                        {
+                            $.ajax({
+                                url: url,
+                                type: 'GET',
+                                data: { code : 1 },
+                                datatype: 'html',
+                                success: function (data)
+                                {
+                                    $.alert("An Item note has been sent to the waiter!");
+
+                                    navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
+                                    if (navigator.vibrate) {
+                                        navigator.vibrate(60);
+                                    }
+                                }
+                            });
+
+                            return true;
+                        }
+                    }
+                }
+            });
+
+            //if (confirm("Are you sure you want to Complete this Item?"))
+            //{
+            //    e.preventDefault();
+            //    e.stopPropagation();
+
+            //    var url = $(this).attr("href");
+
+            //    $.ajax({
+            //        url: url,
+            //        type: 'GET',
+            //        datatype: 'html',
+            //        success: function (data)
+            //        {
+            //            $('#tblkitchenInfo').html('');
+            //            $('#tblkitchenInfo').html(data);
+
+            //            navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
+            //            if (navigator.vibrate) {
+            //                navigator.vibrate(60);
+            //            }
+            //        }
+            //    });
+
+            //    return true;
+            //}
+            //else
+            //{
+            //    return false;
+            //}
+        });
+
+
+        $('.PLSCONFIRM').unbind('click');
+
+        $(".PLSCONFIRM").click(function (e)
+        {
+            if (confirm("Are you sure you want to complete this order?"))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        });
+
+    });
+
+    function Show_Note(note)
+    {
+        $.alert(note);
+    }
+
+</script>
+
+
+
+
+
+
+
+

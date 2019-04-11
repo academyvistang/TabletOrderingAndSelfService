@@ -1,0 +1,141 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>POS - CABBASH</title>
+   
+    <link href="~/LatestAllCss/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/LatestAllCss/bootstrap-horizon.css" rel="stylesheet" />
+    <link href="~/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/css/Style-Light.css" rel="stylesheet" />
+    @*<link href="~/css/figcaption.css" rel="stylesheet" />*@
+
+</head>
+<body>
+    <!-- Navigation -->
+
+
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1" style="width:100%;margin:auto;">
+                <ul class="nav navbar-nav" id="ULDIVTOHIDE">
+
+                    <li style="padding-right:10px; margin-bottom:3px;" class="visible-desktop"><a class="btn btn-warning hbtn" style="color:white;" href="@Url.Action("Index","Pos")"> <i class="fa fa-home"></i> </a></li>
+                    @{var userRole = Roles.GetRolesForUser().FirstOrDefault(); }
+
+                    @*@if (ViewBag.TableNum > 0)
+                    {
+                        <li style="padding-right:10px; margin-bottom:3px;" class="visible-desktop"><a class="btn btn-blue hbtn" id="PinCode" style="color:white;" href="#">@ViewBag.PinCode</a></li>
+                        <li style="padding-right:10px; margin-bottom:3px;" class="visible-desktop"><a class="btn btn-warning hbtn" id="TableOpening" style="color:white;" href="@Url.Action("Index","Pos", new { tableId = ViewBag.TableNum, tableAlias = ViewBag.TableAlias })">@ViewBag.TableAlias.Replace("Table", "")</a></li>
+                    }*@
+
+                    @if (userRole.StartsWith("WAITER") || userRole.StartsWith("DELIVERY") || userRole.StartsWith("CLUBWAITER"))
+                    {
+
+                        @*<li style="padding-right:10px; margin-bottom:3px;" class="visible-desktop"><a class="btn btn-success hbtn" style="color:white;" id="TableOpening" href="@Url.Action("OpenTable","Pos")">OPEN</a></li>*@
+
+                        @*<li style="padding-right:10px; margin-bottom:3px;" class="visible-desktop"><a class="btn btn-info hbtn" style="color:white;" id="OpenViewTable" href="@Url.Action("ViewTables","Pos")">TABLES</a></li>*@
+
+                        <li style="padding-right:10px; margin-bottom:3px;" class="visible-desktop"><a class="btn btn-green hbtn" style="color:white;" href="@Url.Action("Collections","Pos")"><i class="fa fa-taxi"></i></a></li>
+
+                        <li style="padding-right:10px; margin-bottom:3px;" class="visible-desktop"><a class="btn btn-info hbtn" style="color:white;" href="@Url.Action("DeleteEmptyTables","Pos")"><i class="fa fa-recycle"></i></a></li>
+
+                    }
+
+                    @if (userRole.StartsWith("MANAGER"))
+                    {
+                        <li style="padding-right:10px; margin-bottom:3px;" class="visible-desktop"><a class="btn btn-success hbtn" style="color:white;" id="TableOpening" href="@Url.Action("ViewTablesManager","Pos")">TABLES</a></li>
+                    }
+
+
+                    @{ FormsIdentity formsIdentity = HttpContext.Current.User.Identity as FormsIdentity;
+                        FormsAuthenticationTicket ticket = formsIdentity.Ticket;
+                        string userData = ticket.UserData;}
+  
+                    <li style="padding-right:10px; margin-bottom:3px;" class="visible-desktop"><a class="btn btn-danger hbtn" style="color:pink;" href="@Url.Action("LogOff", "Account")" title="@userData"><i class="fa fa-sign-out fa-lg" ></i></a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+
+
+
+    <div class="container-fluid">
+
+        <div class="row">
+
+            <div class="col-md-3 left-side nopadding">
+
+                <div class="row row-horizon" style="width:100%;margin:0px;padding:0px;">
+                    <div id="WaiterTableDIV">
+                    </div>
+                </div>
+
+                <div class="col-sm-12 nopadding">
+                    <div class="col-sm-12 nopadding">
+                        <input type="text" id="KitchenNote" class="form-control barcode" placeholder="Kitchen Note">
+                    </div>
+                </div>
+
+               
+
+                <div class="col-sm-12 nopadding" id="HidenSeek" style="display:none; width:100%;margin:0px;padding:0px;">
+                    <div class="col-xs-6 table-header nopadding">
+                        <h3 class="text-left">Product</h3>
+                    </div>
+
+                    <div class="col-xs-3 table-header nopadding">
+                        <h3 class="text-left">Qty</h3>
+                    </div>
+                    <div class="col-xs-3 table-header nopadding">
+                        <h3 class="text-right">Total</h3>
+                    </div>
+                    <div id="productList">
+                    </div>
+                </div>
+
+                <div class="footer-section">
+                    <div id="BottomPayment">
+                    </div>
+                </div>
+
+                
+
+             
+
+            </div>
+
+            @RenderBody()
+            
+        </div>
+    </div>
+
+    @Html.Hidden("ReceiptNumber", "XXXXXX")
+
+   
+
+    
+    <script type="text/javascript" src="~/POSI/bootstrap.min.js"></script>
+
+
+
+    
+</body>
+</html>

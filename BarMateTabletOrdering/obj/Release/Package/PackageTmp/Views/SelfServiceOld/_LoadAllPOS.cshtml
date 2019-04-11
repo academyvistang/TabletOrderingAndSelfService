@@ -1,0 +1,102 @@
+﻿@model BarMateTabletOrdering.Models.CabbashViewModel
+
+@{ var activeList = Model.ExistingList.Where(x => x.IsActive).GroupBy(x => x.ItemId).Select(y => new BarMateTabletOrdering.Models.LatestGroupByQty
+    {
+        StockItemName = y.ToList().FirstOrDefault().StockItemName,
+        Qty = y.ToList().Sum(x => x.Qty),
+        DateSold = y.ToList().FirstOrDefault().DateSold,
+        StockItemPrice = y.ToList().FirstOrDefault().StockItemPrice,
+        StockItemId = y.Key
+    }).ToList();
+
+    var nonActiveList = Model.ExistingList.Where(x => !x.IsActive).ToList();
+
+}
+
+@foreach (var item in nonActiveList)
+{
+    <div class="col-xs-12" style="font-family:Candara;">
+        <div class="panel panel-default product-details" style="color:darkseagreen;">
+            <div class="panel-body">
+                <div class="col-xs-7 nopadding">
+                    <div class="col-xs-2 nopadding">
+                        <a href="javascript:void(0)" onclick="delete_posale('@item.Id')">
+                            <span class="fa-stack fa-sm productD">
+                                <i class="fa fa-circle fa-stack-2x delete-product">
+                                </i><i class="fa fa-times fa-stack-1x fa-fw fa-inverse"></i>
+                            </span>
+                        </a>
+                    </div><div class="col-xs-10 nopadding">
+                        <span class="textPD" style="font-size:0.9em; padding-left:2px;"><strong>@item.StockItemName</strong></span>
+                    </div>
+                </div>
+                <div class="col-xs-3 nopadding productNum">
+                    <input type="text" id="qt-@item.StockItemId" class="form-control" value="@item.Qty" placeholder="0" maxlength="2">
+                </div>
+                <div class="col-xs-2 nopadding "><span class="subtotal textPD">@(item.StockItemPrice * item.Qty)  </span></div>
+            </div>
+        </div>
+    </div>
+}
+
+@foreach (var item in activeList)
+{
+    <div class="col-xs-12" style="font-family:Candara;">
+        <div class="panel panel-default product-details" style="color:black;">
+            <div class="panel-body">
+                <div class="col-xs-7 nopadding">
+                    <div class="col-xs-2 nopadding">
+                        <a href="javascript:void(0)">
+                            <span class="fa-stack fa-sm productD">
+                                <i class="fa fa-circle fa-stack-2x delete-product">
+                                </i><i class="fa fa-times fa-stack-1x fa-fw fa-inverse"></i>
+                            </span>
+                        </a>
+                    </div><div class="col-xs-10 nopadding">
+                        <span class="textPD" style="font-size:0.9em; padding-left:2px;"><strong>@item.StockItemName</strong></span>
+                    </div>
+                </div>
+                <div class="col-xs-3 nopadding productNum">
+                    <input type="text" id="qt-@item.StockItemId" disabled="disabled" class="form-control" value="@item.Qty" placeholder="0" maxlength="2">
+                </div>
+                <div class="col-xs-2 nopadding "><span class="subtotal textPD">@(item.StockItemPrice * item.Qty)  </span></div>
+            </div>
+        </div>
+    </div>
+}
+
+
+
+<div style="clear:both;"></div>
+
+<div style="margin-bottom:0px;padding-bottom:0px;">
+
+    <div class="row">
+        <div class="row row-horizon">
+            <span class="holdList">
+                <button type="button" onclick="ProcesOrder('@Model.Total','@Model.TableId')" style="width:100%;" class="btn btn-success hbtn"><h5 class="text-bold">PAY NGN @Decimal.Round(Model.Total, 2)</h5></button>
+            </span>
+        </div>
+    </div>
+
+    <div style="clear:both;"></div>
+
+
+
+    <div class="table-responsive col-sm-12 totalTab">
+        <table class="table">
+            <tr>
+                <td class="active" width="30%">SubTotal</td>
+                <td class="whiteBg" width="70%">
+                    NGN <span id="Subtot">@Model.Total</span><span class="float-right"><b id="ItemsNum"><span></span> @Model.TotalItems items</b></span>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div style="clear:both;"></div>
+
+</div>
+
+
+

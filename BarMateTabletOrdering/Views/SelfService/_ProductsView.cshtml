@@ -1,0 +1,80 @@
+﻿@model BarMateTabletOrdering.Models.CabbashViewModel
+
+<link href="~/css/menu.css" rel="stylesheet" />
+
+
+
+<div class="container site">
+    <div class="tab-content">
+        <div class="tab-pane active" id="1">
+            <div class="row">
+
+
+                <div id="menu">
+
+
+
+                    @foreach (var p in Model.ProductsList)
+                    {
+                        var c = p.CategoryName[0];
+                        int index = char.ToUpper(c) - 64;
+
+                        var ccolor = "color0" + p.DistributionPointId.ToString();
+
+
+                    <div class="col-sm-6 col-md-3">
+                        <a href="javascript:void(0)" class="addPct" id="product-@p.Id" onclick="add_posale('@p.Id')" style="margin-bottom:0px;padding-bottom:0px;">
+                            <div class="menu menuName0 thumbnail" style="height:270px;">
+                                <h3 id="proname" style="display:none;" class="@p.CategoryName">@p.StockItemName</h3>
+                                <input type="hidden" id="idname-@p.Id" name="name" value="@p.StockItemName" />
+                                <input type="hidden" id="idprice-@p.Id" name="price" value="@p.UnitPrice" />
+                                <input type="hidden" id="category" name="category" value="@p.CategoryName" />
+
+                                <img src="~/images/m1.png" class="img-responsive">
+                                <h5 class="caption > p">@p.StockItemName </h5><h4 class="price">N @p.UnitPrice</h4>
+                                <input type="hidden" id="category" name="category" value="@p.CategoryName" />
+
+                            </div>
+                        </a>
+                    </div>
+
+
+                  
+
+                    }
+
+
+
+                </div>
+
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

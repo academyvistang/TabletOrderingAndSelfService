@@ -1,0 +1,395 @@
+﻿@model BarMateTabletOrdering.Models.CabbashViewModel
+
+<link href="~/confirm/css/jquery-confirm.css" rel="stylesheet" />
+
+@{
+    ViewBag.Title = "Self Service";
+    Layout = "~/Views/Shared/_LayoutSelfServiceWelcome.cshtml";
+}
+
+<style>
+    #micen {
+        margin: auto;
+        height: 300px;
+        width: 1100px;
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 10;
+        opacity: 0.7;
+        filter: alpha(opacity=70);
+    }
+
+    .ImageWithText {
+        width: 250px;
+        height: 240px;
+        display: inline-block;
+        margin: 5px;
+        position: relative;
+    }
+
+        .ImageWithText img {
+            width: 100%;
+            height: 100%;
+        }
+
+        .ImageWithText :not(img) {
+            position: absolute;
+            top: 85%;
+            z-index: 1;
+            color: #ffa500;
+            text-align: center;
+            width: 100%;
+            text-decoration: solid;
+        }
+</style>
+
+
+<div class="views">
+
+    <div class="view view-main">
+
+
+
+        <div class="pages">
+
+            <div data-page="index" class="page homepage">
+                <div class="page-content">
+
+                    <div class="navbarpages">
+                        <div class="navbar_left">
+                            <div class="logo_text"><a href="@Url.Action("LogOff","Account")">@Model.NameOfPlace</a></div>
+                        </div>
+
+                    </div>
+
+                    <!-- Slider -->
+
+
+                    <div style="height:100%;" data-autoplay="3000" class="swiper-container slidertoolbar swiper-init" data-effect="slide" data-parallax="true" data-next-button=".swiper-button-next" data-prev-button=".swiper-button-prev">
+                        <div class="swiper-wrapper">
+
+                            <div class="swiper-slide" style="background-image:url(../../ssimages/Category/5/45.png);">
+                                <div class="slider_trans">
+                                    <div class="slider-caption">
+                                        <h2 data-swiper-parallax="-100%"></h2>
+                                        <p padding:5px; margin:5px;" data-swiper-parallax="-30%"></p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="swiper-slide" style="background-image:url(../../ssimages/Category/5/14.jpg);">
+                                <div class="slider_trans">
+                                    <div class="slider-caption">
+                                        <h2 data-swiper-parallax="-100%"></h2>
+                                        <p padding:5px; margin:5px;" data-swiper-parallax="-30%"></p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="swiper-slide" style="background-image:url(../../ssimages/Category/5/19.jpg);">
+                                <div class="slider_trans">
+                                    <div class="slider-caption">
+                                        <h2 data-swiper-parallax="-100%"></h2>
+                                        <p padding:5px; margin:5px;" data-swiper-parallax="-30%"></p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="swiper-slide" style="background-image:url(../../ssimages/Category/5/20.jpg);">
+                                <div class="slider_trans">
+                                    <div class="slider-caption">
+                                        <h2 data-swiper-parallax="-100%"></h2>
+                                        <p padding:5px; margin:5px;" data-swiper-parallax="-30%"></p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="swiper-slide" style="background-image:url(../../ssimages/Category/5/21.png);">
+                                <div class="slider_trans">
+                                    <div class="slider-caption">
+                                        <h2 data-swiper-parallax="-100%"></h2>
+                                        <p padding:5px; margin:5px;" data-swiper-parallax="-30%"></p>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                            <div class="swiper-slide" style="background-image:url(../../ssimages/Category/5/22.png);">
+                                <div class="slider_trans">
+                                    <div class="slider-caption">
+                                        <h2 data-swiper-parallax="-100%"></h2>
+                                        <p padding:5px; margin:5px;" data-swiper-parallax="-30%"></p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="swiper-slide" style="background-image:url(../../ssimages/Category/5/24.png);">
+                                <div class="slider_trans">
+                                    <div class="slider-caption">
+                                        <h2 data-swiper-parallax="-100%"></h2>
+                                        <p padding:5px; margin:5px;" data-swiper-parallax="-30%"></p>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                            <div class="swiper-slide" style="background-image:url(../../ssimages/Category/5/38.jpg);">
+                                <div class="slider_trans">
+                                    <div class="slider-caption">
+                                        <h2 data-swiper-parallax="-100%"></h2>
+                                        <p padding:5px; margin:5px;" data-swiper-parallax="-30%"></p>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                            <div class="swiper-slide" style="background-image:url(../../ssimages/Category/5/43.jpg);">
+                                <div class="slider_trans">
+                                    <div class="slider-caption">
+                                        <h2 data-swiper-parallax="-100%"></h2>
+                                        <p padding:5px; margin:5px;" data-swiper-parallax="-30%"></p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="swiper-slide" style="background-image:url(../../ssimages/Category/5/14.jpg);">
+                                <div class="slider_trans">
+                                    <div class="slider-caption">
+                                        <h2 data-swiper-parallax="-100%"></h2>
+                                        <p padding:5px; margin:5px;" data-swiper-parallax="-30%"></p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="swiper-slide" style="background-image:url(../../ssimages/Category/5/35.jpg);">
+                                <div class="slider_trans">
+                                    <div class="slider-caption">
+                                        <h2 data-swiper-parallax="-100%"></h2>
+                                        <p padding:5px; margin:5px;" data-swiper-parallax="-30%"></p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="swiper-slide" style="background-image:url(../../ssimages/Category/5/41.jpg);">
+                                <div class="slider_trans">
+                                    <div class="slider-caption">
+                                        <h2 data-swiper-parallax="-100%"></h2>
+                                        <p padding:5px; margin:5px;" data-swiper-parallax="-30%"></p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="swiper-slide" style="background-image:url(../../ssimages/Category/5/36.jpg);">
+                                <div class="slider_trans">
+                                    <div class="slider-caption">
+                                        <h2 data-swiper-parallax="-100%"></h2>
+                                        <p padding:5px; margin:5px;" data-swiper-parallax="-30%"></p>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="swiper-pagination"></div>
+                        <div class="swiper-button-prev"></div>
+                        <div class="swiper-button-next"></div>
+                    </div>
+
+
+                    <div id="micen">
+                        <div class="ImageWithText ClickMe" style="cursor:pointer;">
+                            <img src="~/ssimages/eatin.jpg" width="200" />
+                            <h2>EAT IN</h2>
+                        </div>
+
+                        <div class="ImageWithText ClickMeOut" style="cursor:pointer;">
+                            <img src="~/ssimages/takeaway.jpg" width="200" />
+                            <h2>TAKEAWAY</h2>
+                        </div>
+
+                        <div class="ImageWithText ClickScan" style="cursor:pointer;">
+                            <img src="~/ssimages/takeaway1.png" width="200" />
+                            <h2>COLLECTIONS</h2>
+                        </div>
+
+
+
+
+                        <div class="ImageWithText ClickEmoji" style="cursor:pointer;">
+                            <img src="~/ssimages/AC-review.png" width="200" />
+                            <h2>RATINGS</h2>
+                        </div>
+
+
+                    </div>
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section scripts
+{
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/confirm/js/jquery-confirm.js"></script>
+
+    <script>
+
+    $(function ()
+    {
+
+        $(".emoji").click(function (e)
+        {
+            var idEmoj = $(this).attr("id");
+
+            if (idEmoj == 1 || idEmoj == 2 || idEmoj == 3)
+            {
+                $.alert("Wow. It means so much to us that you rate us highly. Thank you very much! Please help us tell your family and friends!");
+            }
+            else if (idEmoj == 5 || idEmoj == 6 || idEmoj == 7)
+            {
+                $.alert("We are really sorry about your experience. Please help us improve by leaving a feedback on cabbash! Please! Thank you.");
+            }
+            else
+            {
+                $.alert("What do you mean ok? Nah joke oh! Please help us improve by leaving a feedback on cabbash! Please! Thank you.");
+            }
+
+        });
+
+        $('.ClickEmoji').unbind('click');
+
+        $(".ClickEmoji").click(function (e) {
+            e.preventDefault();
+
+            var url = "/SelfService/GetClickEmoji/";
+
+            $.confirm({
+                title: "Hello, Please kindly rate our services",
+                content: 'url:' + url,
+                useBootstrap: false,
+                columnClass: 'col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3 col-xs-10 col-xs-offset-1',
+                boxWidth: '90%',
+                boxHeight: '100%'
+
+            });
+        });
+
+        $('.ClickMe').unbind('click');
+
+        $(".ClickMe").click(function (e)
+        {
+            e.preventDefault();
+
+            var url = "/SelfService/OpenMyTable/";
+
+            var title = "Hello, Please select your table number";
+
+            $.confirm({
+                title: title,
+                content: 'url:' + url,
+                useBootstrap : false,
+                columnClass: 'col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3 col-xs-10 col-xs-offset-1',
+                titleClass: 'BigTittle',
+                boxWidth: '50%'
+
+                // location of your hugedata.html.
+                //content: 'url:hugedata.html' // location of your hugedata.html.
+            });
+        });
+
+        $('.ClickMeOut').unbind('click');
+
+        $(".ClickMeOut").click(function (e)
+        {
+            e.preventDefault();
+
+            var url = "/SelfService/OpenMyTableAway/";
+
+            $.confirm({
+                title: "Hello, Please select your collection point.",
+                content: 'url:' + url,
+                useBootstrap: false,
+                columnClass: 'col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3 col-xs-10 col-xs-offset-1',
+                boxWidth: '50%',
+                titleClass: 'BigTittle',
+
+                // location of your hugedata.html.
+                //content: 'url:hugedata.html' // location of your hugedata.html.
+            });
+        });
+
+        $('.ClickScan').unbind('click');
+
+        $(".ClickScan").click(function (e)
+        {
+            e.preventDefault();
+
+            $.confirm({
+                title: 'Telephone number required',
+                content: '<form class="formName">' +
+                         '<div class="form-group">' +
+                         '<input type="text" class="form-control" placeholder="Telephone Number Please" id="Telephone" name="Telephone" />' +
+                         '</div>' +
+                         '</form>',
+                type: 'green',
+                animation: 'zoom',
+                animationClose: 'top',
+                buttons: {
+                    ok: {
+                        text: "PROCEED",
+                        btnClass: 'btn-success',
+                        keys: ['enter'],
+                        action: function ()
+                        {
+                            var telno = this.$content.find('#Telephone').val();
+
+                            if (telno == '')
+                            {
+                                $.alert('Please enter a Telephone number');
+                                return false;
+                            }
+                            else
+                            {
+                                var url = "/SelfService/GetDeliveryDetails/?tel=" + telno;
+
+                                $.confirm({
+                                    title: "Hello, Please see details of your collection below.",
+                                    content: 'url:' + url,
+                                    useBootstrap: false,
+                                    columnClass: 'col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3 col-xs-10 col-xs-offset-1',
+                                    boxWidth: '90%',
+                                    boxHeight: '90%',
+                                    titleClass: 'BigTittle'
+                                });
+
+                            }
+                        }
+                    },
+                    cancel:
+                        {
+                            text: "Cancel",
+                            btnClass: 'btn-danger',
+                            action: function ()
+                            {
+
+                            }
+                        }
+                },
+            });
+        });
+
+
+
+    });
+    </script>
+}

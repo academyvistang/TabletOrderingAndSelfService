@@ -1,0 +1,86 @@
+﻿@model BarMateTabletOrdering.Models.CabbashViewModel
+
+<meta http-equiv="refresh" content="60;url=/selfservice/start/" />
+
+@{
+    ViewBag.Title = "IndexNew";
+    Layout = "~/Views/Shared/_LayoutPOSSelfServiceFull.cshtml";
+}
+<link href="~/confirm/css/jquery-confirm.css" rel="stylesheet" />
+
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/confirm/js/jquery-confirm.js"></script>
+
+<script type="text/javascript">
+
+        $(function ()
+        {
+            
+
+            $.confirm({
+                title: 'Do you want to track your order?',
+                content: '<form class="formName">' +
+                         '<div class="form-group">' +
+                         '<input type="text" class="form-control" placeholder="Telephone Number Please" id="Telephone" name="Telephone" />' +
+                         '</div>' +
+                         '</form>',
+                type: 'green',
+                animation: 'zoom',
+                animationClose: 'top',
+                buttons: {
+                    ok: {
+                        text: "TRACK MY ORDER",
+                        btnClass: 'btn-success',
+                        keys: ['enter'],
+                        action: function ()
+                        {
+                            var telno = this.$content.find('#Telephone').val();
+
+                            if (telno == '')
+                            {
+                                $.alert('Please enter a Telephone number');
+                                return false;
+                            }
+                            else
+                            {
+                                var tableId = '@Model.TableId';
+
+                                    $.ajax({
+                                        url: "@Url.Action("AddTelToTable", "SelfService")",
+                                        type: "POST",
+                                        data: { tableId: tableId, telephone: telno },
+                                    success: function (data)
+                                    {
+                                        $.alert({
+                                            title: 'Tracker Enabled!',
+                                            type: 'red',
+                                            content: 'You can now track your order with your telephone number. Thank you',
+                                        });
+                                    },
+                                    error: function (jqXHR, textStatus, errorThrown)
+                                    {
+                                  
+                                    }
+                                  });
+
+                            }
+                        }
+                    },
+                    cancel:
+                        {
+                            text: "No Thank You",
+                            btnClass: 'btn-danger',
+                            action: function () {
+
+                            }
+                        }
+                },
+            });
+            
+        });
+</script>
+
+
+@Html.Partial("_ProductOrders")
+

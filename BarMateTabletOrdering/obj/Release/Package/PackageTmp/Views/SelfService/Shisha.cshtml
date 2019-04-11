@@ -1,0 +1,86 @@
+﻿
+
+@{
+    ViewBag.Title = "IndexNew";
+    Layout = "~/Views/Shared/_LayoutKitchen.cshtml";
+}
+
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+@*<script src="~/Scripts/jquery.signalR-2.2.3.min.js"></script>*@
+@*<script src="~/signalr/hubs" type="text/javascript"></script>*@
+
+<script type="text/javascript">
+
+        $(function ()
+        {
+            // Proxy created on the fly
+            //var kitchen = $.connection.kitchenHub;
+
+            //// Declare a function on the kitchen hub so the server can invoke it
+
+
+            //kitchen.client.displayPrinter = function ()
+            //{
+            //    getData();
+            //};
+
+            //// Start the connection
+            //$.connection.hub.start();
+            getData();
+        });
+
+
+        function getData() {
+            var $tbl = $('#tblkitchenInfo');
+            $.ajax({
+                url: '/Pos/GetSmokingOrders',
+                type: 'GET',
+                datatype: 'html',
+                success: function (data)
+                {
+                    if (data.length > 20) {
+                        $('#tblkitchenInfo').html('');
+                        $('#tblkitchenInfo').html(data);
+
+                        navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
+                        if (navigator.vibrate) {
+                            navigator.vibrate(60);
+                        }
+
+                        var audio = new Audio('../../audio/rave_digger.mp3');
+                        audio.play();
+                    }
+                }
+            });
+        }
+
+        function PlaySoundJump() {
+            var audioElement = document.createElement('audio');
+            audioElement.setAttribute('src', '/Sounds/jump.wav');
+            audioElement.setAttribute('autoplay', 'autoplay');
+            audioElement.play();
+        }
+
+        function PlaySoundOver() {
+            var audioElement = document.createElement('audio');
+            audioElement.setAttribute('src', '/Sounds/gameover.wav');
+            audioElement.setAttribute('autoplay', 'autoplay');
+            audioElement.play();
+        }
+
+        function PlayerHasPlayedSound() {
+            PlaySoundOver(); PlaySoundOver();
+            PlaySoundOver(); PlaySoundOver(); PlaySoundOver();
+            PlaySoundOver(); PlaySoundOver(); PlaySoundOver(); PlaySoundOver();
+            PlaySoundOver(); PlaySoundOver(); PlaySoundOver(); PlaySoundOver();
+            PlaySoundOver(); PlaySoundOver(); PlaySoundJump(); PlaySoundJump();
+        }
+</script>
+
+
+
+
+<div id="tblkitchenInfo">
+
+</div>

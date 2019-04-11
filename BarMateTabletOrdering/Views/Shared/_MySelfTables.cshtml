@@ -1,0 +1,162 @@
+﻿@model BarMateTabletOrdering.Models.CabbashViewModel
+
+<link href="~/css/Style-Light.css" rel="stylesheet" />
+
+<script>
+    $(function()
+    {
+        $('.noajax').unbind('click');
+
+        $('.noajax').click(function (e) {
+            var href = $(this).attr("href");
+            e.preventDefault();
+            e.stopPropagation();
+            window.location.href = href;
+        });
+
+        $(".QuestionWaiter").click(function (e)
+        {
+            var url = $(this).attr("href");
+
+            //alert("XXXXX");
+
+            e.stopPropagation();
+            e.preventDefault();
+
+            $.confirm({
+                title: 'Please Confirm!',
+                content: 'Do you want to add to an existing table?',
+                 titleClass: 'BigTittle',
+                boxWidth: '50%',
+                buttons: {
+                    confirm: {
+                        text: 'Proceed',
+                        btnClass: 'btn-green',
+                        keys: ['enter', 'shift'],
+                        action: function () {
+                        window.location.href = url;
+                        return true;
+                    }
+                  },
+                    cancel: {
+                        text: 'Cancel',
+                        btnClass: 'btn-red',
+                        action: function ()
+                        {
+                            return true;
+                        }
+                    }
+                }
+            });
+        });
+    })
+</script>
+
+@*<div class="col-md-12 right-side nopadding">
+
+    @foreach (var p0 in Model.TableNumbers.GroupBy(x => x.IsActive))
+    {
+        foreach (var p in p0.ToList())
+        {
+            var ccolor = "color03";
+
+            if (p0.Key == true)
+            {
+                ccolor = "color07";
+            }
+
+            <div class="col-sm-2 col-xs-4">
+
+                @if (p0.Key == true)
+                {
+                    <a href="@Url.Action("OpenTableByCashier", "SelfService", new { id = p.TableId, isActive = p0.Key })" class="QuestionWaiter">
+                        <div class="product @ccolor flat-box waves-effect waves-block">
+                            <h3 id="proname">@p.TableId</h3>
+
+                            <div class="maskXX">
+                                <h3>TABLE @p.TableId.ToString()</h3>
+                            </div>
+                        </div>
+                    </a>
+                }
+                else
+                {
+                    <a href="@Url.Action("OpenTableByCashier", "SelfService", new { id = p.TableId, isActive = p0.Key })" class="addPct">
+                        <div class="product @ccolor flat-box waves-effect waves-block">
+                            <h3 id="proname">@p.TableId</h3>
+
+                            <div class="maskXX">
+                                <h3>TABLE @p.TableId.ToString()</h3>
+                            </div>
+                        </div>
+                    </a>
+                }
+
+
+            </div>
+
+        }
+    }
+
+
+
+</div>*@
+
+
+
+
+
+
+<div class="col-md-12 right-side nopadding">
+
+
+
+    @*<div class="col-sm-12">
+        <div id="searchContaner">
+            <div class="input-group stylish-input-group">
+                <input type="text" id="searchProdTable" class="form-control" placeholder="Search">
+                <span class="input-group-addon">
+                    <button type="submit">
+                        <span class="glyphicon glyphicon-search"></span>
+                    </button>
+                </span>
+            </div>
+        </div>
+    </div>*@
+
+
+
+    <div id="tableList2" style="padding:3px;">
+        <div style="padding:10px;" class="row tablesrow">
+           @foreach (var p0 in Model.TableNumbers.GroupBy(x => x.IsActive))
+           {
+               foreach (var p in p0.ToList())
+               {
+                   var strTable = "tableB" + new Random().Next(1, 4).ToString() + ".svg";
+                    <div class="col-sm-2 col-xs-4 tableList" style="height:auto;">
+
+                        @if (p0.Key == true)
+                        {
+                            <a class="noajax" href="@Url.Action("OpenTableByCashier", "SelfService", new { id = p.TableId, isActive = p0.Key })">
+                                <img src="~/svg/@strTable" />
+                                <h2 id="proname">TABLE @p.TableId.ToString()</h2>
+                            </a>
+                        }
+                        else
+                        {
+                            <a class="noajax" href="@Url.Action("OpenTableByCashier", "SelfService", new { id = p.TableId, isActive = p0.Key })">
+                                <img src="~/svg/@strTable" />
+                                <h2 id="proname">TABLE @p.TableId.ToString()</h2>
+                            </a>
+                        }
+                       
+                    </div>
+                }
+            }
+        </div>
+    </div>
+
+
+</div>
+
+

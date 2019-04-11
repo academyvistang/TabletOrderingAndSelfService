@@ -1,0 +1,202 @@
+﻿@model BarMateTabletOrdering.Models.CabbashViewModel
+
+@{
+    ViewBag.Title = "ViewTables";
+    Layout = "~/Views/Shared/_LayoutPOSFullTables.cshtml";
+}
+
+
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+
+<script>
+    $(function ()
+    {
+        Rebind();
+
+        $("#searchProdTable").keyup(function () {
+            // Retrieve the input field text
+            var filter = $(this).val();
+
+            //alert(filter);
+            // Loop through the list
+            $("#tableList13 #proname").each(function ()
+            {
+
+                // If the list item does not contain the text phrase fade it out
+                if ($(this).text().search(new RegExp(filter, "i")) < 0)
+                {
+
+                    $(this).parent().parent().hide();
+                }
+                else
+                {
+                    $(this).parent().parent().show();
+                }
+            });
+        });
+
+        $("#SwapTableId").change(function ()
+        {
+            var tableId = this.value;
+
+            var url = "@Url.Action("GetTableItemsForSplit", "POS")";
+
+            $.ajax({
+                url: url,
+                data: { tableId: tableId },
+                dataType: "html",
+                type: "GET",
+                success: function (data)
+                {
+                    $('#LeftSideReplacement').html("");
+                    $('#LeftSideReplacement').html(data);
+
+                    Rebind();
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert(jqXHR);
+                    alert(textStatus);
+                    alert(errorThrown);
+                }
+            });
+        })
+
+        $("#SwapToTableId").change(function ()
+        {
+            var tableId = this.value;
+
+            var url = "@Url.Action("GetTableItemsForSplitRight", "POS")";
+
+            $.ajax({
+                url: url,
+                data: { tableId: tableId },
+                dataType: "html",
+                type: "GET",
+                success: function (data)
+                {
+                    $('#RightSideReplacement').html("");
+                    $('#RightSideReplacement').html(data);
+
+                    Rebind();
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert(jqXHR);
+                    alert(textStatus);
+                    alert(errorThrown);
+                }
+            });
+        })
+
+    });
+
+    function Rebind()
+    {
+        $('#SubmitME').unbind();
+
+        $("#SubmitME").click(function ()
+        {
+            var leftSide  = $('#SwapTableId').val();
+            var rightSide = $('#SwapToTableId').val();
+
+            if (leftSide == 0 || rightSide == 0)
+            {
+                alert("Please select to and from tables!");
+                return false;
+            }
+            else if (leftSide == rightSide)
+            {
+                alert("You can not move items from a table to itself!");
+                return false;
+            }
+            else
+            {
+                if(!confirm("Proceeding to move your items"))
+                {
+                    return false;
+                }
+            }
+
+            var selectedValues = $('#LeftTableIds').val();
+
+            var url = "/POS/SwapTablesWaiter/";
+
+            $.ajax({
+                url: url,
+                data: { leftSide: leftSide, rightSide: rightSide, selectedValues: selectedValues },
+                dataType: "JSON",
+                type: "POST",
+                success: function (data)
+                {
+                    if (data.ErrorFound == 0)
+                    {
+                        alert("Your table items were succesfuly swapped.");
+                        window.location.href = "/pos/SplitTable/";
+                    }
+                    else
+                    {
+                        alert("There were errors and no swap was done. Please select the items you want to swap!");
+                    }
+                   
+                },
+                error: function (jqXHR, textStatus, errorThrown)
+                {
+                    alert(jqXHR);
+                    alert(textStatus);
+                    alert(errorThrown);
+                }
+            });
+        });
+    }
+</script>
+
+<div class="col-md-12 right-side nopadding">
+
+    <div class="col-md-5">
+
+        <div class="row">
+            <div class="form-group" id="ActiveDropDown">
+                <h5 id="customerName">FROM <span>OCCUPIED TABLES</span></h5>
+                @Html.DropDownListFor(x => x.SwapTableId, new SelectList(Model.OccupiedTables, "Id", "TableName"), new { @style = "width:50%;", @class = "js-select-options form-control" })
+            </div>
+        </div>
+
+        <div class="row" id="LeftSideReplacement">
+
+        </div>
+    </div>
+
+    <div class="col-md-2">
+        <div class="col-md-12">
+            <img src="~/images/if_20_330402.png" height="128" style="cursor:pointer;" id="SubmitME" />
+        </div>
+    </div>
+
+    <div class="col-md-5">
+
+        <div class="row">
+
+            <div class="form-group" id="NewDropDown">
+                <h5 id="customerName">TO <span>All TABLES</span></h5>
+                @Html.DropDownListFor(x => x.SwapToTableId, new SelectList(Model.AllOpenTables, "Id", "TableName"), new { @style = "width:50%;", @class = "js-select-options form-control" })
+            </div>
+
+        </div>
+
+        <div class="row" id="RightSideReplacement">
+
+        </div>
+
+       
+
+    </div>
+
+
+    </div>
+
+
+
+
+
+
+
+

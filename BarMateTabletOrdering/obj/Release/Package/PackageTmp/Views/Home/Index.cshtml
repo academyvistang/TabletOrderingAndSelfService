@@ -1,0 +1,118 @@
+﻿@model BarMateTabletOrdering.Models.CabbashViewModel
+
+
+
+<div class="pages">
+
+    <div data-page="index" class="page homepage">
+        <div class="page-content">
+
+            <div class="navbarpages">
+
+                <div class="navbar_left">
+                    <div class="logo_text"><a href="@Url.Action("Index","Home")">CABBASH</a></div>
+                </div>
+        
+            </div>
+
+
+            <div class="swiper-container-toolbar swiper-toolbar swiper-init" data-effect="slide" data-slides-per-view="1" data-slides-per-group="1" data-space-between="0" data-pagination=".swiper-pagination-toolbar">
+                <div class="swiper-pagination-toolbar"></div>
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide toolbar-icon">
+
+                        <a id="QRmenu" href="@Url.Action("GenerateMenuUrl","Home")"><img src="~/images/icons/red/food.png" /><span>MENU</span></a>
+
+                        @if (Request.IsAuthenticated)
+                        {
+                            var userRole = Roles.GetRolesForUser().FirstOrDefault();
+
+                            if (userRole.StartsWith("WAITER") || userRole.StartsWith("DELIVERY") || userRole.StartsWith("MANAGER") || userRole.StartsWith("CLUBWAITER"))
+                            {
+                                <a class="noajax" href="@Url.Action("Index","Pos")" data-view=".view-main"><img src="~/images/icons/red/cart.png" alt="" title="" /><span>POS</span></a>
+                            }
+                            else if (userRole.StartsWith("MIXER"))
+                            {
+                                <a class="noajax" href="@Url.Action("Mixer","Pos")" data-view=".view-main"><img src="~/images/icons/red/cart.png" alt="" title="" /><span>DRINKS</span></a>
+                            }
+                            else if (userRole.StartsWith("KITCHEN"))
+                            {
+                                <a class="noajax" href="@Url.Action("Kitchen","Pos")" data-view=".view-main"><img src="~/images/icons/red/building.png" alt="" title="" /><span>KITCHEN</span></a>
+                            }
+                            else if (userRole.StartsWith("SHISHA"))
+                            {
+                                <a class="noajax" href="@Url.Action("Shisha","Pos")" data-view=".view-main"><img src="~/images/icons/red/building.png" alt="" title="" /><span>SHISHA</span></a>
+                            }
+                        }
+                        else
+                        {
+                            <a href="#" data-popup=".popup-login" class="open-popup"><img src="~/images/icons/red/lock.png" alt="" title="" /><span>LOG IN</span></a>
+
+                            if (Model.InvalidCred.HasValue)
+                            {
+                                if (Model.InvalidCred.Value)
+                                {
+                                    <a href="#"><img src="~/images/icons/red/users.png" alt="" title="" /><span>INVALID USER</span></a>
+                                }
+                                else
+                                {
+                                    <a href="#"><img src="~/images/icons/red/logout.png" alt="" title="" /><span>USER LOGGED IN</span></a>
+                                }
+                            }
+
+                            if (Model.TableClash.HasValue)
+                            {
+                                if (!string.IsNullOrEmpty(Model.TablesClashing))
+                                {
+                                    <a href="#"><img src="~/images/icons/red/tables.png" alt="" title="" /><span>@Model.TablesClashing</span></a>
+                                }
+                               
+                            }
+
+                        }
+
+                    </div>
+                 
+
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script>
+        $(function ()
+        {
+           
+
+            $('#QRmenu').click(function (e)
+            {
+                
+                e.preventDefault();
+                e.stopPropagation();
+                var href = $(this).attr("href");
+
+
+
+                $.confirm({
+                    title: "MENU",
+                    content: 'url:' + href,
+                    titleClass: 'BigTittle',
+                    boxWidth: '50%'
+                });
+              
+            });
+
+        });
+
+    
+</script>
+
+
+
+
+
+

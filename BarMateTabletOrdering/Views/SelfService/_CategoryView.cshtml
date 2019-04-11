@@ -1,0 +1,30 @@
+﻿@model BarMateTabletOrdering.Models.CabbashViewModel
+
+@if (Model.CategoryId == 0)
+{
+    <span class="categories selectedGat" id=""><i class="fa fa-home"></i></span>
+}
+else
+{
+    <span class="categories" id=""><i class="fa fa-home"></i></span>
+}
+
+@foreach (var cat in Model.CategoriesListString)
+{
+    <span class="categories" id="@cat">@cat</span>
+}
+
+<br />
+<div id="AlphabetFilter">
+
+</div>
+
+@*@if (Model.QuickSearchString != null)
+{
+    foreach (var cat in Model.QuickSearchString)
+    {
+        <span class="categoriesSearch" id="@cat">@cat</span>
+    }
+}*@
+
+

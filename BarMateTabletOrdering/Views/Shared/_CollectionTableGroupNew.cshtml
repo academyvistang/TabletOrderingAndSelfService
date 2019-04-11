@@ -1,0 +1,127 @@
+﻿@model BarMateTabletOrdering.Models.LatestGroupByModel
+
+<style>
+    .omon {
+        box-shadow: 4px 5px 25px rgba(0,0,0,0.6);
+        display: inline;
+        background: #fff;
+        border-radius: 10px;
+        font-size: 18px;
+        padding: 5px;
+        opacity: 1;
+        position: absolute;
+        top: 0;
+        right: -10;
+        transform: translateY(10px);
+        transition: 1s ease-in-out;
+        animation: twitch 2s ease-in-out 1s 3;
+    }
+
+    .odion {
+        box-shadow: 4px 5px 25px rgba(0,0,0,0.6);
+        display: inline;
+        background: #fff;
+        border-radius: 10px;
+        font-size: 18px;
+        padding: 5px;
+        opacity: 1;
+        position: absolute;
+        bottom: 0;
+        right: -10;
+        transform: translateY(10px);
+        transition: 1s ease-in-out;
+        animation: twitch 2s ease-in-out 1s 3;
+    }
+</style>
+
+@{var modelList = Model.Items;}
+
+
+
+
+@{ var mmmm1 = modelList.GroupBy(x => x.ItemId).Select(y => new BarMateTabletOrdering.Models.LatestGroupByQty
+    {
+        ItemNotes = y.ToList().Where(c => !string.IsNullOrEmpty(c.ItemNote)).Select(x => x.ItemNote).ToDelimitedString(","),
+        CategoryName = y.ToList().FirstOrDefault().CategoryName,
+        TableItemId = y.ToList().FirstOrDefault().Id,
+        StockItemName = y.ToList().FirstOrDefault().StockItemName,
+        Qty = y.ToList().Sum(x => x.Qty),
+        DateSold = y.ToList().FirstOrDefault().DateSold,
+        Note = y.ToList().FirstOrDefault().Note,
+        Takeaway = y.ToList().FirstOrDefault().Takeaway,
+        PaidInFull = y.ToList().FirstOrDefault().PaidInFull
+    }).ToList();}
+
+
+
+
+@foreach (var p in mmmm1)
+{
+    var c = p.CategoryName[0];
+
+    int index = char.ToUpper(c) - 64;
+
+    var ccolor = "color0";
+
+    if (index > 0 && index <= 4)
+    {
+        ccolor = ccolor + "2";
+    }
+    else if (index > 4 && index <= 8)
+    {
+        ccolor = ccolor + "3";
+    }
+    else if (index > 8 && index <= 12)
+    {
+        ccolor = ccolor + "4";
+    }
+    else if (index > 12 && index <= 16)
+    {
+        ccolor = ccolor + "5";
+    }
+    else if (index > 16 && index <= 20)
+    {
+        ccolor = ccolor + "6";
+    }
+    else
+    {
+        ccolor = ccolor + "7";
+    }
+
+    <div class="col-sm-2 col-xs-4">
+
+        @if (p.Takeaway)
+        {
+            <a class="omon" style="color:red; cursor:pointer;"><i class="fa fa-motorcycle"></i></a>
+        }
+        else if (p.PaidInFull)
+        {
+            <a class="omon" style="color:red; cursor:pointer;"><i class="fa fa-credit-card"></i></a>
+        }
+        else
+        {
+            <a class="omon" style="color:red; cursor:pointer;"><i class="fa fa-user-plus"></i></a>
+        }
+
+        @if (!string.IsNullOrEmpty(p.ItemNotes))
+        {
+            <a class="odion" onclick="Show_Note('@p.ItemNotes')" style="color:red; cursor:pointer;"><i class="fa fa-newspaper-o"></i></a>
+        }
+
+
+
+        <a href="@Url.Action("PlaceOrderDoneByCollectionSingle", "Pos", new { id = p.TableItemId })" class="addPct PLSCONFIRMJAX" id="product-@p.TableItemId">
+            <div class="product @ccolor flat-box waves-effect waves-block" style="height:auto;">
+                <h3 id="proname">@p.StockItemName</h3>
+                <h5 id="proname">@p.Qty</h5>
+                <div class="maskXX">
+                    <h3>@p.DateSold.ToShortTimeString()</h3>
+                </div>
+            </div>
+        </a>
+
+    </div>
+
+}
+
+

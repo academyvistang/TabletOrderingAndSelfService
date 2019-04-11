@@ -1,0 +1,34 @@
+﻿@model BarMateTabletOrdering.Models.CabbashViewModel
+
+
+<div style="width:100%;padding-right:0px;margin-right:0px;">
+
+
+    <div class="col-xs-12 nopadding" style="font-family:Candara;">
+        <div class="panel panel-default product-details" style="color:darkseagreen;">
+            <div class="panel-body" style="padding:3px;">
+                <div class="col-xs-7 nopadding">
+                    <div class="col-xs-2 nopadding">
+                        <a href="javascript:void(0)" onclick="delete_posale('@Model.SingleItem.Id')">
+                            <span class="fa-stack fa-sm productD">
+                                <i class="fa fa-circle fa-stack-2x delete-product" style="color:green;">
+                                </i><i class="fa fa-times fa-stack-1x fa-fw fa-inverse"></i>
+                            </span>
+                        </a>
+                    </div><div class="col-xs-10 nopadding">
+                        <span class="textPD" style="font-size:0.7em; padding-left:2px;"><strong><a style="color:green;" class="SingleNote" id="@Model.SingleItem.Id">@Model.SingleItem.StockItemName</a>
+                            </strong></span>
+                    </div>
+                </div>
+                
+                <div class="col-xs-2 nopadding productNum">
+                <input type="number" id="qt-@Model.SingleItem.Id" onblur="edit_posale('@Model.SingleItem.Id')" min="1" class="form-control" value="@Model.SingleItem.Qty" placeholder="0" maxlength="2">
+
+                @*<input type="number" id="qt-@Model.SingleItem.Id" onchange="edit_posale('@Model.SingleItem.Id')" class="form-control" value="@Model.SingleItem.Qty" placeholder="0" maxlength="2">*@
+                </div>
+                <div class="col-xs-3 nopadding "><span class="subtotal textPD">@decimal.Round(Model.SingleItem.StockItemPrice, 0)  </span></div>
+            </div>
+        </div>
+    </div>
+
+</div>

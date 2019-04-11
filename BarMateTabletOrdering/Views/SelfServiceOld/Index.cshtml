@@ -1,0 +1,1605 @@
+﻿@model BarMateTabletOrdering.Models.CabbashViewModel
+
+@{
+    ViewBag.Title = "IndexNew";
+    Layout = "~/Views/Shared/_LayoutPOSSelfService.cshtml";
+}
+
+<link href="~/confirm/css/jquery-confirm.css" rel="stylesheet" />
+
+@Html.Hidden("TableId", Model.TableId)
+@Html.Hidden("TableAlias", Model.TableAlias)
+
+
+<div class="col-md-9 right-side nopadding">
+    <div class="row row-horizon">
+        <div id="CategoryDIV">
+        </div>
+    </div>
+    <div class="col-sm-12">
+        <div id="searchContaner">
+            <div class="input-group stylish-input-group">
+                <input type="text" id="searchProd" class="form-control" placeholder="Search">
+                <span class="input-group-addon">
+                    <button type="submit">
+                        <span class="glyphicon glyphicon-search"></span>
+                    </button>
+                </span>
+            </div>
+        </div>
+    </div>
+    <!-- product list section -->
+
+    <div id="productList2">
+    </div>
+</div>
+
+<button style="display:none;"  type="button" id="AddMe" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+    Added
+</button>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <p>Added to Cart <i class="icon_cart"></i></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="AddSale" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="AddSale">Confirm Sale</h4>
+            </div>
+            <form>
+                <div class="modal-body">
+                    
+                    
+                    <div class="form-group">
+                        <h2 id="TotalModal"></h2>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="paymentMethod">Payment method:</label>
+                        <select class="js-select-options form-control" style="width:50%;" id="paymentMethod">
+                            <option value="1">Cash</option>
+                            <option value="2">Cheque</option>
+                            <option value="3">POS</option>
+                            <option value="4">POST BILL</option>
+                            <option value="4">POST BILL(PART PAYMENT)</option>
+                            <option value="6">Complimentary</option>
+                        </select>
+                    </div>
+                    <div class="form-group Paid">
+                        <label for="Paid">Paid</label>
+                        <input type="text" value="0" name="paid" class="form-control " id="Paid" placeholder="Paid">
+                    </div>
+                    <div class="form-group Paid">
+                        <h5 id="LoyaltyTelephoneNumber">Loyalty Telephone Number</h5>
+                        @Html.TextBoxFor(x => x.LoyaltyTelephone, new { @class = "form-control" })
+                    </div>
+                    <div class="form-group CreditCardNum">
+                        <i class="fa fa-cc-visa fa-2x" id="visa" aria-hidden="true"></i>
+                        <i class="fa fa-cc-mastercard fa-2x" id="mastercard" aria-hidden="true"></i>
+                        <i class="fa fa-cc-amex fa-2x" id="amex" aria-hidden="true"></i>
+                        <i class="fa fa-cc-discover fa-2x" id="discover" aria-hidden="true"></i>
+                        <label for="CreditCardNum">Credit Card Number (swipe)</label>
+                        <input type="text" class="form-control cc-num" id="CreditCardNum" placeholder="Credit Card Number (swipe)">
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="form-group CreditCardHold col-md-4 padding-s">
+                        <input type="text" class="form-control" id="CreditCardHold" placeholder="Credit Card Holder">
+                    </div>
+                    <div class="form-group CreditCardHold col-md-2 padding-s">
+                        <input type="text" class="form-control" id="CreditCardMonth" placeholder="Month">
+                    </div>
+                    <div class="form-group CreditCardHold col-md-2 padding-s">
+                        <input type="text" class="form-control" id="CreditCardYear" placeholder="Year">
+                    </div>
+                    <div class="form-group CreditCardHold col-md-4 padding-s">
+                        <input type="text" class="form-control" id="CreditCardCODECV" placeholder="CODE CV">
+                    </div>
+                    <div class="form-group ChequeNum">
+                        <label for="ChequeNum">Cheque Number</label>
+                        <input type="text" name="chequenum" class="form-control" id="ChequeNum" placeholder="Cheque Number">
+                    </div>
+                    <div class="form-group ReturnChange">
+                        <h3 id="ReturnChange">Change <span>0</span> NGN</h3>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="modal-footer">
+                    <button style="float:left;" type="button" class="btn btn-success" onclick="saleBtn(0)">Print</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-add stripe-btn" onclick="saleBtn(2)"><i class="fa fa-cc-stripe" aria-hidden="true"></i> StripePayment</button>
+                    <button type="button" class="btn btn-add" onclick="saleBtn(1)">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- /.Modal -->
+<!-- Modal ticket -->
+<div class="modal fade" id="ticket" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document" id="ticketModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="ticket">Receipt</h4>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <div id="printSection">
+                    <!-- Ticket goes here -->
+                    <center><h1 style="color:#34495E">Empty</h1></center>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default hiddenpr" data-dismiss="modal">Close</button>
+                @*<button type="button" class="btn btn-add hiddenpr" href="javascript:void(0)" onclick="pdfreceipt()">PDF</button>*@
+                @*<button type="button" class="btn btn-add hiddenpr" onclick="PrintPdf('@Model.TableId')">PDF</button>*@
+                <button type="button" class="btn btn-add hiddenpr" onclick="email('@Model.TableId')">Email</button>
+                <button type="button" class="btn btn-add hiddenpr" onclick="PrintTicket('@Model.TableId')">Print</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /.Modal -->
+<!-- Modal add user -->
+<div class="modal fade" id="AddCustomer" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Add Customer</h4>
+            </div>
+            <form action="#" method="post" accept-charset="utf-8" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="CustomerName">Customer Name</label>
+                        <input type="text" name="name" class="form-control" id="CustomerName" placeholder="Customer Name">
+                    </div>
+                    <div class="form-group">
+                        <label for="CustomerPhone">Phone</label>
+                        <input type="text" name="phone" class="form-control" id="CustomerPhone" placeholder="Phone">
+                    </div>
+                    <div class="form-group">
+                        <label for="CustomerEmail">Email</label>
+                        <input type="email" name="email" class="form-control" id="CustomerEmail" placeholder="Email">
+                    </div>
+                    <div class="form-group">
+                        <label for="CustomerDiscount">Discount</label>
+                        <input type="text" name="discount" class="form-control" id="CustomerDiscount" placeholder="Discount">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-add">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- /.Modal -->
+<!-- Modal add user -->
+<div class="modal fade" id="CloseRegister" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">close&nbsp;register</h4>
+            </div>
+            <div class="modal-body">
+                <div id="closeregsection">
+                    <!-- close register detail goes here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a href="javascript:void(0)" onclick="SubmitRegister()" class="btn btn-red col-md-12 flat-box-btn">close&nbsp;register</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+<script src="https://js.paystack.co/v1/inline.js"></script>
+<script src="~/confirm/js/jquery-confirm.js"></script>
+
+
+<script type="text/javascript">
+
+        $(document).ready(function ()
+        {
+            
+            $('#myModal').on('shown.bs.modal', function ()
+            {
+                window.setTimeout(closeModal, 400)
+            });
+
+           
+           
+
+            $("#HideTop").click(function (e)
+            {
+                $("#HidenSeek").toggle();
+            });
+
+            var tableId = '@Model.TableId';
+
+            if (tableId == "undefined")
+            {
+                tableId = 0;
+            }
+
+            LoadProducts(0, tableId);
+
+            if (tableId > 0)
+            {
+                $('#productList').load("/selfservice/LoadPos/" + tableId);
+
+                $('#BottomPayment').load("/selfservice/LoadBottomPos/" + tableId);
+            }
+
+            $("#searchProd").keyup(function () {
+               
+                // Retrieve the input field text
+                var filter = $(this).val();
+                // Loop through the list
+                $("#productList2 #proname").each(function () {
+                    // If the list item does not contain the text phrase fade it out
+                    if ($(this).text().search(new RegExp(filter, "i")) < 0) {
+                        $(this).parent().parent().parent().hide();
+                        // Show the list item if the phrase matches
+                    } else {
+                        $(this).parent().parent().parent().show();
+                    }
+                });
+            });
+
+            $("#searchProdTable").keyup(function () {
+                // Retrieve the input field text
+                var filter = $(this).val();
+                // Loop through the list
+                $("#tableList2 #proname").each(function () {
+                    // If the list item does not contain the text phrase fade it out
+                    if ($(this).text().search(new RegExp(filter, "i")) < 0) {
+                        $(this).parent().parent().parent().hide();
+                        // Show the list item if the phrase matches
+                    } else {
+                        $(this).parent().parent().parent().show();
+                    }
+                });
+            });
+
+           
+
+            $('#scancode').bind('keypress', function (e)
+            {
+                if (e.keyCode == 13)
+                {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+
+            $('#scancode').keydown(function (e)
+            {
+                if (e.keyCode == 13)
+                {
+                    var tableId = $("#TableId").val();
+
+                    var v = $(this).val();
+
+                    $.ajax({
+                        type: "get",
+                        async: false,
+                        url: "@Url.Action("GetItemByBarCode","SelfService")",
+                        data: { code : v, tableId : tableId },
+                        dataType: "json",
+                        success: function (data)
+                        {
+                            if (data != null)
+                            {
+                                $('#scancode').val('');
+                                $('#scancode').text('');
+                                $('#productList').load("/selfservice/LoadPos/" + tableId);
+                                $('#BottomPayment').load("/selfservice/LoadBottomPos/" + tableId);
+                            }
+                            else
+                            {
+
+                            }
+                        },
+                        error: function ()
+                        {
+                        }
+                    });
+
+                    e.preventDefault();
+                    return false;
+                }
+            });
+
+
+            $('.holdList').load("/selfservice/GetAllTables/" + tableId);
+            //$('#Subtot').load("http://www.dar-elweb.com/demos/zarpos/selfservice/subtot", null, total_change);
+            //$('#ItemsNum span, #ItemsNum2 span').load("http://www.dar-elweb.com/demos/zarpos/selfservice/totiems");
+
+
+            $('.Paid').show();
+            $('.ReturnChange').show();
+            $('.CreditCardNum').hide();
+            $('.CreditCardHold').hide();
+            $('.ChequeNum').hide();
+            $('.stripe-btn').hide();
+
+            /*<option value="1">Cash</option>
+                            <option value="2">Cheque</option>
+                            <option value="3">POS</option>
+                            <option value="4">POST BILL</option>
+                            <option value="4">POST BILL(PART PAYMENT)</option>
+                            <option value="6">Complimentary</option>*/
+
+
+
+            $("#paymentMethod").change(function () {
+
+                var p_met = $(this).find('option:selected').val();
+
+                if (p_met === '1')
+                {
+                    $('.Paid').show();
+                    $('.ReturnChange').show();
+                    $('.CreditCardNum').hide();
+                    $('.CreditCardHold').hide();
+                    $('.CreditCardMonth').hide();
+                    $('.CreditCardYear').hide();
+                    $('.CreditCardCODECV').hide();
+                    $('#CreditCardNum').val('');
+                    $('#CreditCardHold').val('');
+                    $('#CreditCardYear').val('');
+                    $('#CreditCardMonth').val('');
+                    $('#CreditCardCODECV').val('');
+                    $('.stripe-btn').hide();
+                    $('.ChequeNum').hide();
+                    $('#GuestDropDown').hide();
+
+                }
+                else if (p_met === '6') {
+                    $('#Paid').val(0);
+                    $('.Paid').show();
+                    $('.ReturnChange').show();
+                    $('.CreditCardNum').hide();
+                    $('.CreditCardHold').hide();
+                    $('.CreditCardMonth').hide();
+                    $('.CreditCardYear').hide();
+                    $('.CreditCardCODECV').hide();
+                    $('#CreditCardNum').val('');
+                    $('#CreditCardHold').val('');
+                    $('#CreditCardYear').val('');
+                    $('#CreditCardMonth').val('');
+                    $('#CreditCardCODECV').val('');
+                    $('.stripe-btn').hide();
+                    $('.ChequeNum').hide();
+                    $('#GuestDropDown').show();
+                }
+                else if (p_met === '3') {
+                    $('.Paid').show();
+                    $('.ReturnChange').hide();
+                    $('.CreditCardNum').show();
+                    $('.CreditCardHold').show();
+                    $('.CreditCardMonth').show();
+                    $('.CreditCardYear').show();
+                    $('.CreditCardCODECV').show();
+                    $('.stripe-btn').show();
+                    $('.ChequeNum').hide();
+                    $('#GuestDropDown').hide();
+                }
+                else if (p_met === '2') {
+                    $('.Paid').hide();
+                    $('.ReturnChange').hide();
+                    $('.CreditCardNum').hide();
+                    $('.CreditCardHold').hide();
+                    $('.CreditCardMonth').hide();
+                    $('.CreditCardYear').hide();
+                    $('.CreditCardCODECV').hide();
+                    $('#CreditCardNum').val('');
+                    $('#CreditCardHold').val('');
+                    $('#CreditCardYear').val('');
+                    $('#CreditCardMonth').val('');
+                    $('#CreditCardCODECV').val('');
+                    $('.stripe-btn').hide();
+                    $('.ChequeNum').show();
+                    $('#GuestDropDown').hide();
+                }
+                else if
+                    (p_met === '4')
+                {
+                    $('#Paid').val(0);
+                    $('.Paid').show();
+                    $('.ReturnChange').show();
+                    $('.CreditCardNum').hide();
+                    $('.CreditCardHold').hide();
+                    $('.CreditCardMonth').hide();
+                    $('.CreditCardYear').hide();
+                    $('.CreditCardCODECV').hide();
+                    $('#CreditCardNum').val('');
+                    $('#CreditCardHold').val('');
+                    $('#CreditCardYear').val('');
+                    $('#CreditCardMonth').val('');
+                    $('#CreditCardCODECV').val('');
+                    $('.stripe-btn').hide();
+                    $('.ChequeNum').hide();
+                    $('#GuestDropDown').show();
+                }
+
+            });
+            /********************************* Credit Card infos section ****************************************/
+            $('#CreditCardNum').validateCreditCard(function (result) {
+                var cardtype = result.card_type == null ? '-' : result.card_type.name;
+                $('.CreditCardNum i').removeClass('dark-blue');
+                $('#' + cardtype).addClass('dark-blue');
+            });
+
+            $('#CreditCardNum').keypress(function (e) {
+                var data = $(this).val();
+                if (data.length > 22) {
+
+                    if (e.keyCode == 13) {
+                        e.preventDefault();
+
+                        var c = new SwipeParserObj(data);
+
+                        $('#CreditCardNum').val(c.account);
+                        $('#CreditCardHold').val(c.account_name);
+                        $('#CreditCardYear').val(c.exp_year);
+                        $('#CreditCardMonth').val(c.exp_month);
+                        $('#CreditCardCODECV').val('');
+
+                    }
+                    else {
+                        $('#CreditCardNum').val('');
+                        $('#CreditCardHold').val('');
+                        $('#CreditCardYear').val('');
+                        $('#CreditCardMonth').val('');
+                        $('#CreditCardCODECV').val('');
+                    }
+
+                    $('#CreditCardCODECV').focus();
+                    $('#CreditCardNum').validateCreditCard(function (result) {
+                        var cardtype = result.card_type == null ? '-' : result.card_type.name;
+                        $('.CreditCardNum i').removeClass('dark-blue');
+                        $('#' + cardtype).addClass('dark-blue');
+                    });
+                }
+
+            });
+
+            $("#ClubTime").click(function () {
+                var productid = 0;
+
+                var cytText = "";
+
+                var clubTime = $("#ClubTime").text();
+
+                if (clubTime == "Club Time") {
+                    productid = 0;
+                    cytText = "You have indicated that you want to change to normal price?";
+                }
+                else {
+                    productid = 1;
+                    cytText = "You have indicated that you want to change to club price?";
+                }
+
+                var r = confirm(cytText);
+
+                if (r) {
+
+
+                    $.ajax({
+                        type: "get",
+                        async: false,
+                        url: "/selfservice/SetClubPrice/",
+                        data: { product_id: productid },
+                        dataType: "json",
+                        success: function (data) {
+                            thisSaleRemainder = data.Remainder;
+                        }
+                    }).done(function () {
+                        if (productid == 0) {
+                            $("#ClubTime").text("Normal Time");
+                            alert("Normal Price now active");
+                        }
+                        else {
+                            $("#ClubTime").text("Club Time");
+                            alert("Club Price now active");
+                        }
+                    });
+                }
+
+                return false;
+            });
+
+
+            // ********************************* change calculations
+            $('#Paid').on('keyup', function () {
+                var change = -(parseFloat($('#total').text()) - parseFloat($(this).val()));
+                if (change < 0) {
+                    $('#ReturnChange span').text(change.toFixed(2));
+                    $('#ReturnChange span').addClass("red");
+                    $('#ReturnChange span').removeClass("light-blue");
+                } else {
+                    $('#ReturnChange span').text(change.toFixed(2));
+                    $('#ReturnChange span').removeClass("red");
+                    $('#ReturnChange span').addClass("light-blue");
+                }
+            });
+
+           
+
+            //  search product
+            
+        });
+
+    function closeModal() {
+        $('#myModal').modal('hide');
+    }
+
+        // barcode scanner
+        function barcode() {
+            var code = $('.barcode').val();
+            $.ajax({
+                url: "http://www.dar-elweb.com/demos/zarpos/selfservice/findproduct/" + code,
+                type: "POST",
+                dataType: "JSON",
+                success: function (data) {
+                    add_posale(data);
+                    $('.barcode').val('');
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert("error");
+                }
+            });
+            return false;
+        };
+
+        //  **********************select categorie
+
+
+        $(".categories").on("click", function ()
+        {
+
+            // Retrieve the input field text
+            var filter = $(this).attr('id');
+
+            $(this).parent().children().removeClass('selectedGat');
+
+            $(this).addClass('selectedGat');
+            // Loop through the list
+            $("#productList2 #category").each(function () {
+                // If the list item does not contain the text phrase fade it out
+                if ($(this).val().search(new RegExp(filter, "i")) < 0) {
+                    $(this).parent().parent().parent().hide();
+                    // Show the list item if the phrase matches
+                } else {
+                    $(this).parent().parent().parent().show();
+                }
+            });
+        });
+        // function to calculate a percentage from a number
+        function percentage(tot, n) {
+            var perc;
+            perc = ((parseFloat(tot) * (parseFloat(n ? n : 0) * 0.01)));
+            return perc;
+        }
+
+
+
+        // function to calculate the total number
+        function total_change()
+        {
+            var tot;
+
+            if($('.RESIDENT').val() != "")
+            {
+
+                $('#taxValue').text(0);
+
+                if (($('.RESIDENT').val().indexOf('%') == -1) && ($('.Remise').val().indexOf('%') == -1)) {
+                    tot = parseFloat($('#Subtot').text().replace(/ /g, '')) + parseFloat($('.RESIDENT').val() ? $('.RESIDENT').val() : 0);
+                    $('#residentValue').text('NGN');
+                    $('#RemiseValue').text('NGN');
+                    tot = tot - parseFloat($('.Remise').val() ? $('.Remise').val() : 0);
+                    var sc = parseFloat($('.Service').val());
+                    tot = tot + sc;
+                    $("#ServiceValue").text($('.Service').val() + ' NGN')
+                    $('#total').text(tot.toFixed(2));
+                    $('#Paid').val(tot.toFixed(2));
+                    $('#TotalModal').text('Total ' + tot.toFixed(2) + ' NGN');
+                } else if (($('.RESIDENT').val().indexOf('%') != -1) && ($('.Remise').val().indexOf('%') == -1)) {
+                    tot = parseFloat($('#Subtot').text()) + percentage($('#Subtot').text(), $('.RESIDENT').val());
+                    $('#residentValue').text(percentage($('#Subtot').text(), $('.RESIDENT').val()).toFixed(2) + ' NGN');
+                    $('#RemiseValue').text('NGN');
+                    tot = tot - parseFloat($('.Remise').val() ? $('.Remise').val() : 0);
+                    var sc = parseFloat($('.Service').val());
+                    tot = tot + sc;
+                    $("#ServiceValue").text($('.Service').val() + ' NGN')
+                    $('#total').text(tot.toFixed(2));
+                    $('#Paid').val(tot.toFixed(2));
+                    $('#TotalModal').text('Total ' + tot.toFixed(2) + ' NGN');
+                } else if (($('.RESIDENT').val().indexOf('%') != -1) && ($('.Remise').val().indexOf('%') != -1)) {
+                    tot = parseFloat($('#Subtot').text()) + percentage($('#Subtot').text(), $('.RESIDENT').val());
+                    $('#residentValue').text(percentage($('#Subtot').text(), $('.RESIDENT').val()).toFixed(2) + ' NGN');
+                    tot = tot - percentage($('#Subtot').text(), $('.Remise').val());
+                    var sc = parseFloat($('.Service').val());
+                    tot = tot + sc;
+                    $("#ServiceValue").text($('.Service').val() + ' NGN')
+                    $('#RemiseValue').text(percentage($('#Subtot').text(), $('.Remise').val()).toFixed(2) + ' NGN');
+                    $('#total').text(tot.toFixed(2));
+                    $('#Paid').val(tot.toFixed(2));
+                    $('#TotalModal').text('Total ' + tot.toFixed(2) + ' NGN');
+                } else if (($('.RESIDENT').val().indexOf('%') == -1) && ($('.Remise').val().indexOf('%') != -1)) {
+                    tot = parseFloat($('#Subtot').text()) + parseFloat($('.RESIDENT').val() ? $('.RESIDENT').val() : 0);
+                    tot = tot - percentage($('#Subtot').text(), $('.Remise').val());
+                    var sc = parseFloat($('.Service').val());
+                    tot = tot + sc;
+                    $("#ServiceValue").text($('.Service').val() + ' NGN')
+                    $('#residentValue').text('NGN');
+                    $('#RemiseValue').text(percentage($('#Subtot').text(), $('.Remise').val()).toFixed(2) + ' NGN');
+                    $('#total').text(tot.toFixed(2));
+                    $('#Paid').val(tot.toFixed(2));
+                    $('#TotalModal').text('Total ' + tot.toFixed(2) + ' NGN');
+                }
+
+            }
+            else
+            {
+                $('#residentValue').text(0);
+
+                if (($('.TAX').val().indexOf('%') == -1) && ($('.Remise').val().indexOf('%') == -1))
+                {
+                    tot = parseFloat($('#Subtot').text().replace(/ /g, '')) + parseFloat($('.TAX').val() ? $('.TAX').val() : 0);
+                    $('#taxValue').text('NGN');
+                    $('#RemiseValue').text('NGN');
+                    tot = tot - parseFloat($('.Remise').val() ? $('.Remise').val() : 0);
+                    var sc = parseFloat($('.Service').val());
+                    tot = tot + sc;
+                    $("#ServiceValue").text($('.Service').val() + ' NGN')
+                    $('#total').text(tot.toFixed(2));
+                    $('#Paid').val(tot.toFixed(2));
+                    $('#TotalModal').text('Total ' + tot.toFixed(2) + ' NGN');
+                } else if (($('.TAX').val().indexOf('%') != -1) && ($('.Remise').val().indexOf('%') == -1))
+                {
+                    tot = parseFloat($('#Subtot').text()) + percentage($('#Subtot').text(), $('.TAX').val());
+                    $('#taxValue').text(percentage($('#Subtot').text(), $('.TAX').val()).toFixed(2) + ' NGN');
+                    $('#RemiseValue').text('NGN');
+                    tot = tot - parseFloat($('.Remise').val() ? $('.Remise').val() : 0);
+                    var sc = parseFloat($('.Service').val());
+                    tot = tot + sc;
+                    $("#ServiceValue").text($('.Service').val() + ' NGN')
+                    $('#total').text(tot.toFixed(2));
+                    $('#Paid').val(tot.toFixed(2));
+                    $('#TotalModal').text('Total ' + tot.toFixed(2) + ' NGN');
+                }
+                else if (($('.TAX').val().indexOf('%') != -1) && ($('.Remise').val().indexOf('%') != -1))
+                {
+
+                    var actualTotal = parseFloat($('#Subtot').text()) - percentage($('#Subtot').text(), $('.Remise').val());
+
+                    tot = parseFloat(actualTotal + percentage(actualTotal, $('.TAX').val()));
+
+                    $('#taxValue').text(percentage(actualTotal, $('.TAX').val()).toFixed(2) + ' NGN');
+
+                    var actualTax = percentage(actualTotal, $('.TAX').val()).toFixed(2);
+
+                    tot = parseFloat(actualTotal) + parseFloat(actualTax);
+
+                    var sc = parseFloat($('.Service').val());
+
+                    tot = parseFloat(tot) + parseFloat(sc);
+
+                    $("#ServiceValue").text($('.Service').val() + ' NGN')
+                    $('#RemiseValue').text(percentage($('#Subtot').text(), $('.Remise').val()).toFixed(2) + ' NGN');
+                    $('#total').text(tot.toFixed(2));
+                    $('#Paid').val(tot.toFixed(2));
+                    $('#TotalModal').text('Total ' + tot.toFixed(2) + ' NGN');
+
+                }
+                else if (($('.TAX').val().indexOf('%') == -1) && ($('.Remise').val().indexOf('%') != -1))
+                {
+                    tot = parseFloat($('#Subtot').text()) + parseFloat($('.TAX').val() ? $('.TAX').val() : 0);
+                    tot = tot - percentage($('#Subtot').text(), $('.Remise').val());
+                    var sc = parseFloat($('.Service').val());
+                    tot = tot + sc;
+                    $("#ServiceValue").text($('.Service').val() + ' NGN')
+                    $('#taxValue').text('NGN');
+                    $('#RemiseValue').text(percentage($('#Subtot').text(), $('.Remise').val()).toFixed(2) + ' NGN');
+                    $('#total').text(tot.toFixed(2));
+                    $('#Paid').val(tot.toFixed(2));
+                    $('#TotalModal').text('Total ' + tot.toFixed(2) + ' NGN');
+                }
+            }
+        }
+
+
+        function LoadMethods()
+        {
+            $(".categories").click(function ()
+            {
+
+                // Retrieve the input field text
+                var filter = $(this).attr('id');
+
+                $(this).parent().children().removeClass('selectedGat');
+
+                $(this).addClass('selectedGat');
+                // Loop through the list
+                $("#productList2 #category").each(function () {
+                    // If the list item does not contain the text phrase fade it out
+                    if ($(this).val().search(new RegExp(filter, "i")) < 0) {
+                        $(this).parent().parent().parent().hide();
+                        // Show the list item if the phrase matches
+                    } else {
+                        $(this).parent().parent().parent().show();
+                    }
+                });
+            });
+        }
+
+        function LoadProducts(id, tableId)
+        {
+            
+
+            if (tableId == 0)
+            {
+                var murl = "@Url.Action("GetProductsBlank", "SelfService")" + "/" + id;
+
+                // ajax delete data to database
+                $.ajax({
+                    url: murl,
+                    type: "GET",
+                    dataType: "json",
+                    success: function (data)
+                    {
+                        $("#productList2").html("");
+                        $("#productList2").html(data.PV);
+
+                        $("#CategoryDIV").html("");
+                        $("#CategoryDIV").html(data.CV);
+
+                        LoadMethods();
+                    },
+                    error: function (jqXHR, textStatus, errorThrown)
+                    {
+
+                    }
+                });
+            }
+            else
+            {
+                var murl = "@Url.Action("GetProducts", "SelfService")" + "/" + id;
+
+                // ajax delete data to database
+                $.ajax({
+                    url: murl,
+                    type: "GET",
+                    dataType: "json",
+                    success: function (data)
+                    {
+                        $("#productList2").html("");
+                        $("#productList2").html(data.PV);
+
+                        $("#CategoryDIV").html("");
+                        $("#CategoryDIV").html(data.CV);
+
+                        LoadMethods();
+                    },
+                    error: function (jqXHR, textStatus, errorThrown)
+                    {
+
+                    }
+                });
+
+            }
+
+           
+        }
+
+        function delete_posaleManager(id) {
+
+            var tableId = $("#TableId").val();
+
+            var password = prompt("Password Please:");
+
+            // ajax delete data to database
+            $.ajax({
+                url: "@Url.Action("ReduceOrDeleteQuatityManager", "SelfService")",
+                type: "POST",
+            data: { tableId: tableId, id: id, password: password },
+            dataType: "JSON",
+            success: function (data)
+            {
+                $('#productList').html("");
+                $('#productList').html(data.LoadPosView);
+
+                $('#BottomPayment').html("");
+                $('#BottomPayment').html(data.LoadPosBottom);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert("error");
+            }
+        });
+
+        }
+
+
+        function delete_posale(id) {
+
+            var tableId = '@Model.TableId';
+            // ajax delete data to database
+            $.ajax({
+                url: "@Url.Action("ReduceOrDeleteQuatity", "SelfService")",
+                type: "POST",
+                data: { tableId: tableId, id: id},
+                dataType: "JSON",
+                success: function (data)
+                {
+                    $('#productList').html("");
+                    $('#productList').html(data.LoadPosView);
+
+                    $('#BottomPayment').html("");
+                    $('#BottomPayment').html(data.LoadPosBottom);
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert("error");
+                }
+            });
+
+        }
+
+        /********************************** Hold functions ************************************/
+        function AddHold()
+        {
+            $.ajax({
+                url: "@Url.Action("AddTable","SelfService")",
+                type: "POST",
+                dataType: "JSON",
+                success: function (data)
+                {
+                    //alert(data.TableNumber);
+                    $("#TableId").val(data.OpenTableId);
+                    $('.holdList').load("/selfservice/GetAllTables" + "/" + data.OpenTableId);
+                    $('#productList').load("/selfservice/LoadPos/" + data.OpenTableId);
+                    $('#BottomPayment').load("/selfservice/LoadBottomPos/" + data.OpenTableId);
+                    //$('#ItemsNum span, #ItemsNum2 span').load("http://www.dar-elweb.com/demos/zarpos/selfservice/totiems");
+                    //$('#Subtot').load("http://www.dar-elweb.com/demos/zarpos/selfservice/subtot", null, total_change);
+                    //$('#' + data.TableNumber).parent().children().removeClass('selectedHold');
+                    //$('#' + data.TableNumber).addClass('selectedHold');
+
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert("error");
+                }
+            });
+
+        }
+
+        function RemoveHold()
+        {
+            var id = $('.selectedHold').clone().children().remove().end().text();
+
+            if (id != "1")
+            {
+                swal({
+                    title: 'Are you sure ?',
+                    text: 'You will not be able to recover this Data later!',
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: 'Yes, delete it!',
+                    closeOnConfirm: false
+                },
+                function ()
+                {
+                    var url = "@Url.Action("RemoveTable","SelfService")";
+
+                    $.ajax({
+                        url: url,
+                        data: { id: id },
+                        type: "POST",
+                        dataType: "JSON",
+                        success: function (data)
+                        {
+                            if (data.Failed == 0)
+                            {
+                                $('#productList').load("/selfservice/LoadPos/" + id);
+                                $('#BottomPayment').load("/selfservice/LoadBottomPos/" + id);
+                                $('.holdList').load("/selfservice/GetAllTables" + id);
+                                //$('#ItemsNum span, #ItemsNum2 span').load("http://www.dar-elweb.com/demos/zarpos/selfservice/totiems");
+                                //$('#Subtot').load("http://www.dar-elweb.com/demos/zarpos/selfservice/subtot", null, total_change);
+                            }
+                            else
+                            {
+                                $('.holdList').load("/selfservice/GetAllTables/");
+                            }
+                        },
+                        error: function (jqXHR, textStatus, errorThrown)
+                        {
+                            //alert("error");
+                        }
+                    });
+                    swal.close();
+                });
+            }
+
+        }
+
+        function SelectHold(number) {
+            // ajax delete data to database
+            //alert(number);
+            $.ajax({
+                url: "@Url.Action("SelectTable","SelfService")" + "/" + number,
+                type: "POST",
+                dataType: "JSON",
+                success: function (data) {
+                    $('#productList').load("/selfservice/LoadPos/" + number);
+                    $('#BottomPayment').load("/selfservice/LoadBottomPos/" + number);
+                    //$('#ItemsNum span, #ItemsNum2 span').load("http://www.dar-elweb.com/demos/zarpos/selfservice/totiems");
+                    //$('#Subtot').load("http://www.dar-elweb.com/demos/zarpos/selfservice/subtot", null, total_change);
+                    $('#' + number).parent().children().removeClass('selectedHold');
+                    $('#' + number).addClass('selectedHold');
+                    $('#TableId').val(number);
+                },
+                error: function (jqXHR, textStatus, errorThrown)
+                {
+                    alert("error");
+                }
+            });
+
+        }
+
+    /********************************** end Hold functions ************************************/
+
+    
+    function add_pictureRecipe(id, pictureId, name, description)
+    {
+        //alert(id);
+        //alert(pictureId);
+
+        var url = "/selfservice/GetProductRecipe/?id=" + id + "&pictureId=" + pictureId + "&description=" + description;
+        $.confirm({
+            title: name,
+            content: 'url:' + url,
+            // titleClass: 'BigTittle',
+            boxWidth : '50%'
+            // location of your hugedata.html.
+            //content: 'url:hugedata.html' // location of your hugedata.html.
+        });
+    }
+
+    function add_picture(picturePath)
+    {
+        var url = "/selfservice/GetProductPic/?pictureId=" + picturePath;
+        $.confirm({
+            content: 'url:' + url,
+            // titleClass: 'BigTittle',
+            boxWidth: '50%'
+            // location of your hugedata.html.
+            //content: 'url:hugedata.html' // location of your hugedata.html.
+        });
+    }
+
+    function add_posaleBlank(id)
+    {
+        $.alert({
+            title: 'Please select a table!',
+            content: '<br><centre><img style="padding-left:0%;" src="../../images/SelectATable.png"></centre>',
+        });
+       // $.alert("Please select a table!");//SelectATable.jpg
+        return false;
+    }
+
+    
+
+        function add_posale(id)
+        {
+            var name1 = $('#idname-' + id).val();
+            var tableId = '@Model.TableId';
+
+            var price1 = $('#idprice-' + id).val();
+            var number = $('.selectedHold').clone().children().remove().end().text();
+            // ajax delete data to database
+            $.ajax({
+                url: "@Url.Action("AddProduct", "SelfService")",
+                type: "POST",
+                data: { ignore : false, tableId : tableId, name: name1, price: price1, product_id: id, number: number, registerid: 33 },
+                success: function (data)
+                {
+                    if (data.InsertError == 1)
+                    {
+                        $.alert("This table has been closed by the Cashier");
+                        window.location.href = "/selfservice/index/";
+                    }
+                    else
+                    {
+                        //$("#AddMe").trigger("click");
+
+                        $('#productList').html("");
+                        $('#productList').html(data.LoadPosView);
+
+                        $('#BottomPayment').html("");
+                        $('#BottomPayment').html(data.LoadPosBottom);
+
+                        //$('#productList').load("/selfservice/LoadPos/" + tableId);
+                        //$('#BottomPayment').load("/selfservice/LoadBottomPos/" + tableId);
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown)
+                {
+                    $.alert("This table has been closed by the Cashier");
+                    window.location.href = "/selfservice/index/";
+                }
+            });
+
+        }
+
+        function edit_posale(id,type) {
+            var qt1 = $('#qt-' + id).val();
+            var tableId = $('#TableId').val();
+
+            $.ajax({
+                url: "@Url.Action("ReduceOrDeleteQuatity", "SelfService")",
+                type: "POST",
+                data: { tableId: tableId, id: id, qty: qt1, type: type },
+                success: function (data)
+                {
+                    $('#productList').html("");
+                    $('#productList').html(data.LoadPosView);
+
+                    $('#BottomPayment').html("");
+                    $('#BottomPayment').html(data.LoadPosBottom);
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert("error");
+                }
+            });
+
+        }
+
+
+        $("#customerSelect").change(function () {
+
+            var id = $(this).find('option:selected').val();
+            if (id === '0') {
+                $('.Remise').val('');
+            } else {
+                $.ajax({
+                    url: "http://www.dar-elweb.com/demos/zarpos/selfservice/GetDiscount/" + id,
+                    type: "POST",
+                    success: function (data) {
+                        var values = data.split('~');
+                        $('#customerName span').text(values[1]);
+                        $('.Remise').val(values[0]);
+                        $('#Subtot').load("http://www.dar-elweb.com/demos/zarpos/selfservice/subtot", null, total_change);
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        alert("error");
+                    }
+                });
+            }
+        });
+
+
+        function PrintOrder(id)
+        {
+
+            var url = "@Url.Action("Print", "SelfService")";
+
+            $.ajax({
+                url: url,
+                data: { tableId: id },
+                dataType: "JSON",
+                type: "POST",
+                success: function (data)
+                {
+
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert(jqXHR);
+                    alert(textStatus);
+                    alert(errorThrown);
+                }
+            });
+        }
+
+    function payWithPaystack(amount, transId)
+    {
+        amount = 6000;
+
+        alert(amount);
+
+        var handler = PaystackPop.setup({
+            //key: 'pk_test_8dd5cd81548ad6833fb63e9d60f9b17dec7acfa9',//pk_live_2e9989d6cdc7f0c48f81ca15fa2742367f8bd3e0
+            key: 'pk_test_8dd5cd81548ad6833fb63e9d60f9b17dec7acfa9',
+            email: 'leboston@yahoo.com',
+            amount: amount * 100,
+            ref: transId, // generates a pseudo-unique reference. Please replace with a reference you generated. Or remove the line entirely so our API will generate one for you
+            metadata: {
+                custom_fields: [
+                   {
+                       display_name: "Mobile Number",
+                       variable_name: "mobile_number",
+                       value: "leboston@yahoo.com"
+                   }
+                ]
+            },
+            callback: function (response) {
+                // alert('success. transaction ref is ' + response.reference);
+                window.location.href = "/SelfService/ReturnChargePaystack/" + response.reference
+            },
+            onClose: function () {
+                alert('window closed');
+            }
+        });
+        handler.openIframe();
+    }
+
+    function ProcesOrder(total, tableId)
+    {
+        var kitchenNote = $('#KitchenNote').val();
+
+        $.ajax({
+            type: "get",
+            async: false,
+            url: "@Url.Action("GetTransactionId", "SelfService")",
+            data: { amount: total, tableId: tableId, kitchenNote : kitchenNote },
+        dataType: "json",
+        success: function (data)
+        {
+           
+
+            if (data.transId != "")
+            {
+
+                $.confirm({
+                    title: 'Pay with Paystack Or Bank App!',
+                    content: 'Please confirm!',
+                    buttons: {
+                        somethingElse:
+                           {
+                               text: 'Bank App',
+                               btnClass: 'btn-green',
+                               action: function ()
+                               {
+                                   //window.location.href = "/SelfService/GenerateBankQRCode/?transId=" + data.transId;
+                                   var url = "/selfservice/GetQRCode/?transId=" + data.transId;
+                                   $.confirm({
+                                       title: 'Scan the code below with your bank app to pay.',
+                                       content: 'url:' + url,
+                                       // titleClass: 'BigTittle',
+                                       boxWidth: '50%'
+                                       // location of your hugedata.html.
+                                       //content: 'url:hugedata.html' // location of your hugedata.html.
+                                   });
+                               }
+                           },
+                        somethingElse1:
+                           {
+                               text: 'Paystack5',
+                               btnClass: 'btn-blue',
+                               action: function ()
+                               {
+                                   //alert();
+                                   //alert(data.transId);
+                                   total = 900;
+                                   payWithPaystack(total, data.transId);
+                               }
+                           },
+                        cancel: function ()
+                        {
+
+                        }
+                    }
+                });
+                
+            }
+        },
+        error: function ()
+        {
+        }
+
+       });
+
+       
+
+    }
+
+        function ProcesOrderNon(id)
+        {
+            //alert();
+
+                $.confirm({
+                    title: 'Please Confirm!',
+                    content: 'Are you sure you want to process the order?',
+                    // titleClass: 'BigTittle',
+                    boxWidth: '50%',
+                    buttons: {
+                        confirm: {
+                            text: 'Proceed',
+                            btnClass: 'btn-green',
+                            keys: ['enter', 'shift'],
+                            action: function ()
+                            {
+                                var kitchenNote = $('#KitchenNote').val();
+                                var url = "@Url.Action("ProcessTheOrderByTableNumberOne", "SelfService")";
+
+                                $.ajax({
+                                    url: url,
+                                    data: { tableId: id, kitchenNote: kitchenNote },
+                                    dataType: "JSON",
+                                    type: "POST",
+                                    success: function (data)
+                                    {
+                                        $('#KitchenNote').val("");
+                                        $('#productList').load("/selfservice/LoadPos/" + id);
+                                        $('#BottomPayment').load("/selfservice/LoadBottomPos/" + id);
+                                    },
+                                    error: function (jqXHR, textStatus, errorThrown)
+                                    {
+                                        alert(jqXHR);
+                                        alert(textStatus);
+                                        alert(errorThrown);
+                                    }
+                                });
+                            }
+                        },
+                        cancel: {
+                            text: 'Cancel',
+                            btnClass: 'btn-red',
+                            action: function ()
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                });
+            
+        }
+
+        function cancelPOS()
+        {
+            var tableId = $('#TableId').val();
+
+            swal({
+                title: 'Are you sure ?',
+                text: 'You will not be able to recover the item(s) later!',
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: 'Yes, delete it!',
+                closeOnConfirm: false
+            },
+            function () {
+
+                $('#customerSelect').val('0');
+                $('#customerSelect').trigger('change.select2');
+                $('.Remise').val('');
+                $('.TAX').val('10%');
+
+                $.ajax({
+                    url: "@Url.Action("DeleteFromTable", "SelfService")",
+                    data: { id: tableId },
+                    type: "POST",
+                    success: function (data)
+                    {
+                        $('#TableId').val(0);
+                        $('#productList').load("/selfservice/LoadPos/");
+                        $('#BottomPayment').load("/selfservice/LoadBottomPos/");
+                        $('.holdList').load("/selfservice/GetAllTables/");
+                        //$('#Subtot').load("http://www.dar-elweb.com/demos/zarpos/selfservice/subtot", null, total_change);
+                        $('#ItemsNum span, #ItemsNum2 span').text("0");
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        alert("error");
+                    }
+                });
+                swal('Deleted!', 'the item(s) has been deleted.', "success");
+            });
+        };
+
+
+        function saleBtn(type)
+        {
+
+            var clientID = $('#customerSelect').find('option:selected').val();
+            var clientName = $('#customerName span').text();
+            var Tax = $('.TAX').val();
+            var Resident = $('.RESIDENT').val();
+            var Discount = $('.Remise').val();
+            var Subtotal = $('#Subtot').text();
+            var Total = $('#total').text();
+            var createdBy = 'sale Staff';
+            var totalItems = $('#ItemsNum span').text();
+            var Paid = $('#Paid').val();
+            var paidMethod = $('#paymentMethod').find('option:selected').val();
+            var Status = 0;
+            var ccnum = $('#CreditCardNum').val();
+            var ccmonth = $('#CreditCardMonth').val();
+            var ccyear = $('#CreditCardYear').val();
+            var ccv = $('#CreditCardCODECV').val();
+            var paymentMethodId = 0;
+            switch (paidMethod)
+            {
+                case '3':
+                    paidMethod += '~' + $('#CreditCardNum').val() + '~' + $('#CreditCardHold').val();
+                    paymentMethodId = 3;
+                    break;
+                case '2':
+                    paidMethod += '~' + $('#ChequeNum').val();
+                    paymentMethodId = 2;
+                    break;
+                case '1':
+                    var change = parseFloat(Total) - parseFloat(Paid);
+                    paymentMethodId = 1;
+                    if (change == parseFloat(Total)) Status = 1;
+                    else if (change > 0) Status = 2;
+                    else if (change <= 0) Status = 0;
+                    break;
+                case '4':
+                    paymentMethodId = 4;
+                    break;
+                case '6':
+                    paymentMethodId = 6;
+            }
+
+            var taxamount = $('.TAX').val().indexOf('%') != -1 ? parseFloat($('#taxValue').text()) : $('.TAX').val();
+            var discountamount = $('.Remise').val().indexOf('%') != -1 ? parseFloat($('#RemiseValue').text()) : $('.Remise').val();
+            var residentAmount = $('.RESIDENT').val().indexOf('%') != -1 ? parseFloat($('#residentValue').text()) : $('.RESIDENT').val();
+            var serviceCharge = parseFloat($('#ServiceValue').text());
+
+
+            var tableId = $('#TableId').val();
+            var guestId = $('#GuestId').val();
+            var accountHolderId = $('#AccountHolderId').val();
+            var kitchenNote = $('#KitchenNote').val();
+            var loyaltyTelephone = $('#LoyaltyTelephone').val();
+
+
+            $.ajax({
+                url: "@Url.Action("Payment", "SelfService")",
+                type: "POST",
+                data: {
+                    resident: Resident, residentAmount: residentAmount, serviceCharge: serviceCharge, tableId: tableId,
+                    type: type, client_id: clientID, clientname: clientName, discountamount: discountamount, taxamount: taxamount, tax: Tax, discount: Discount,
+                    subtotal: Subtotal, total: Total, created_by: createdBy, totalitems: totalItems, paid: Paid, status: Status, paymentMethodId: paymentMethodId,
+                    guestId: guestId, accountHolderId : accountHolderId, kitchenNote: kitchenNote,
+                    ccnum: ccnum,
+                    ccmonth: ccmonth, ccyear: ccyear, ccv: ccv, loyaltyTelephone: loyaltyTelephone
+                },
+                success: function (data)
+                {
+                    if (data.Success == 1)
+                    {
+                        //alert("$('#Paid').val(0);");
+                        //$("#paymentMethod").selectedIndex = 1;
+                        $('#Paid').val(0);
+                        $('#TableId').val(0);
+                        $('#printSection').html(data);
+                        $('#productList').load("/selfservice/LoadPos/");
+                        $('#BottomPayment').load("/selfservice/LoadBottomPos/");
+                        //$('#ItemsNum span, #ItemsNum2 span').load("http://www.dar-elweb.com/demos/zarpos/selfservice/totiems");
+                        //$('#Subtot').load("http://www.dar-elweb.com/demos/zarpos/selfservice/subtot", null, total_change);
+                        $('#AddSale').modal('hide');
+                        $('#ticket').modal('show');
+                        $('#ReturnChange span').text('0');
+                        $('#Paid').val('0');
+                        $('#LoyaltyTelephone').val('');
+                        $('#ReceiptNumber').val(data.ReceiptNumber);
+                        $('.holdList').load("/selfservice/GetAllTables");
+                    }
+                    else
+                    {
+                        alert(data.ErrorMessage);
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown)
+                {
+                    alert("error");
+                }
+            });
+
+            $('#CreditCardNum').val('');
+            $('#CreditCardHold').val('');
+            $('#CreditCardYear').val('');
+            $('#CreditCardMonth').val('');
+            $('#CreditCardCODECV').val('');
+
+        }
+
+        function PrintTicket()
+        {
+            //$('.modal-body').removeAttr('id');
+            //window.print();
+            //$('.modal-body').attr('id', 'modal-body');
+        }
+
+        function CloseRegister() {
+            $.ajax({
+                url: "http://www.dar-elweb.com/demos/zarpos/selfservice/CloseRegister/",
+                type: "POST",
+                success: function (data) {
+                    $('#closeregsection').html(data);
+                    $('#CloseRegister').modal('show');
+                    setTimeout(function () { $('#countedcash').focus() }, 1000);
+                    $('#countedcash').on('keyup', function () {
+                        var change = -(parseFloat($('#expectedcash').text()) - parseFloat($(this).val()));
+                        var difftot = change + parseFloat($('#diffcc').text()) + parseFloat($('#diffcheque').text());
+                        var total = parseFloat($('#countedcc').val()) + parseFloat($('#countedcheque').val()) + parseFloat($('#countedcash').val());
+                        $('#countedtotal').text(total.toFixed(2));
+                        $('#difftotal').text(difftot.toFixed(2))
+                        if (change < 0) {
+                            $('#diffcash').text(change.toFixed(2));
+                            $('#diffcash').addClass("red");
+                            $('#diffcash').removeClass("light-blue");
+                        } else {
+                            $('#diffcash').text(change.toFixed(2));
+                            $('#diffcash').removeClass("red");
+                            $('#diffcash').addClass("light-blue");
+                        }
+                    });
+
+                    $('#countedcc').on('keyup', function () {
+                        var change = -(parseFloat($('#expectedcc').text()) - parseFloat($(this).val()));
+                        var difftot = change + parseFloat($('#diffcash').text()) + parseFloat($('#diffcheque').text());
+                        var total = parseFloat($('#countedcc').val()) + parseFloat($('#countedcheque').val()) + parseFloat($('#countedcash').val());
+                        $('#countedtotal').text(total.toFixed(2));
+                        $('#difftotal').text(difftot.toFixed(2))
+                        if (change < 0) {
+                            $('#diffcc').text(change.toFixed(2));
+                            $('#diffcc').addClass("red");
+                            $('#diffcc').removeClass("light-blue");
+                        } else {
+                            $('#diffcc').text(change.toFixed(2));
+                            $('#diffcc').removeClass("red");
+                            $('#diffcc').addClass("light-blue");
+                        }
+                    });
+
+                    $('#countedcheque').on('keyup', function () {
+                        var change = -(parseFloat($('#expectedcheque').text()) - parseFloat($(this).val()));
+                        var difftot = change + parseFloat($('#diffcc').text()) + parseFloat($('#diffcash').text());
+                        var total = parseFloat($('#countedcc').val()) + parseFloat($('#countedcheque').val()) + parseFloat($('#countedcash').val());
+                        $('#countedtotal').text(total.toFixed(2));
+                        $('#difftotal').text(difftot.toFixed(2))
+                        if (change < 0) {
+                            $('#diffcheque').text(change.toFixed(2));
+                            $('#diffcheque').addClass("red");
+                            $('#diffcheque').removeClass("light-blue");
+                        } else {
+                            $('#diffcheque').text(change.toFixed(2));
+                            $('#diffcheque').removeClass("red");
+                            $('#diffcheque').addClass("light-blue");
+                        }
+                    });
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert("error");
+                }
+            });
+        }
+
+        function SubmitRegister() {
+            var expectedcash = $('#expectedcash').text();
+            var countedcash = $('#countedcash').val();
+            var expectedcc = $('#expectedcc').text();
+            var countedcc = $('#countedcc').val();
+            var expectedcheque = $('#expectedcheque').text();
+            var countedcheque = $('#countedcheque').val();
+            var RegisterNote = $('#RegisterNote').val();
+
+            swal({
+                title: 'Are you sure ?',
+                text: 'You will not be able to recover the Holds later!',
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: 'Yes, Close it!',
+                closeOnConfirm: false
+            },
+            function () {
+
+                $.ajax({
+                    url: "#",
+                    type: "POST",
+                    data: { expectedcash: expectedcash, countedcash: countedcash, expectedcc: expectedcc, countedcc: countedcc, expectedcheque: expectedcheque, countedcheque: countedcheque, RegisterNote: RegisterNote },
+                    success: function (data) {
+                        window.location.href = "#";
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        alert("error");
+                    }
+                });
+
+                swal.close();
+            });
+        }
+
+        function email(tableId)
+        {
+            $('#ticket').modal('hide');
+            swal({
+                title: "Email Address Required!",
+                text: "Email:",
+                type: "input",
+                showCancelButton: true,
+                closeOnConfirm: false,
+                animation: "slide-from-top",
+                inputPlaceholder: "Email Address"
+            },
+               function (inputValue) {
+                   if (inputValue === false) return false;
+                   if (inputValue === "")
+                   {
+                       swal.showInputError("You need to enter an email!");
+                       return false
+                   }
+                   //var content = $('#printSection').html();
+                   $.ajax({
+                       url: "@Url.Action("Email", "SelfService")",
+                       type: "POST",
+                       data: { id: tableId, email: inputValue },
+                       success: function (data)
+                       {
+                           $('#ticket').modal('show');
+                           swal.close();
+                       },
+                       error: function (jqXHR, textStatus, errorThrown) {
+                           alert("error");
+                       }
+                   });
+               });
+        }
+
+        function PrintPdf(tableId)
+        {
+            $.ajax({
+                url: "@Url.Action("PrintPdf", "SelfService")",
+                type: "POST",
+            data: { id: tableId},
+            success: function (data)
+            {
+                $('#ticket').modal('show');
+                swal.close();
+            },
+            error: function (jqXHR, textStatus, errorThrown)
+            {
+                alert("error");
+            }
+             });
+
+        }
+
+        //function pdfreceipt()
+        //{
+        //    var content = $('#printSection').html();
+        //    $.redirect('http://www.dar-elweb.com/demos/zarpos/selfservice/pdfreceipt/', { content: content });
+        //}
+
+</script>
+
+
+
+
+
+
+
